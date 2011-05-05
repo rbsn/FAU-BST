@@ -13,7 +13,10 @@ OBJECTS=$(SOURCES:.cc=.o)
 TARGET=test
 
 
-all: $(SOURCES) $(TARGET)
+all: .cc $(TARGET)
+
+.cc:
+	$(CC) $(SOURCES)
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(OBJECTS) -o $@
