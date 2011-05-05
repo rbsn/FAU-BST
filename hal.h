@@ -1,5 +1,12 @@
+#ifndef HAL_H
+#define HAL_H
+
+
 // DEFINES
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+
+#endif
 
 
 // INCLUDES
@@ -9,6 +16,9 @@
 #include <sched.h>
 
 #include <errno.h>
+#include "cpu.h"
+
+int trampolinfkt(void *);
 
 
-cpu_set_t *cpusetp;
+#endif
