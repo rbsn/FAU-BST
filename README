@@ -33,40 +33,70 @@ RESULT:
 	
 	Appendix A:
 
-/////////++oosyhddmmmNNNNNNNNNNmmmNNMMMMMMNmhhyyyyyyssssssssssooooooooooshNMMMMNNmmmmmNNNMMNs+++++++
-++////////+oosyhdddmmmmmNNNNNNNNmmNNNNMMMMMMNmyssyysooooo++//////++//ohdNMMMMMNNNmmmmNNMMMMm+///////
-+++//////+++osyhhddmmmddmNNNNNNNNmmmNNNMMMMMMMMMMMMNNNNNNddhhssssmNmmNMMMMMMNNNmmmmNNMMMMMMy////////
-++++++///+++osyyhdddmdhhhmNNNNNNNNNNNNNMMMMMMMMMMMMMMmdy+:syy:omNMMMMMMMMMMMNNNNNNNNNMMMMMd+////////
-+++++++//+++ossyhdddddhyydNNNNNNNNMMMMNNMMMMMMMMMNNdo-..``:/:::ydNNNMMMMMMNNNNNMMNNNNNMMMmo/////////
-++++++++++++oosyhdddddhyyhNNNmmNNNNMMMMMNMMNMNNdy+/.` ` `````.:://sdNMNNNNMMNNNNNNNMMMMh+/////////
-++++++++++++oosyhhddmddhyyddddmmNNNMMMMMMmdhys--``` ```-/+ydNMNNNNNNNNNNNNNNs////////::
-++++++++++++oosyhhddmmdhyssshdmNNMMMMMNNmhs/:.``` ` ```../oydNMMMMMNNNNNNdd+::::::::::
-o+++++++++++oosyyhddmmddhso+ydmNMMMMMNNhs/+-```` ` ` ```````--:ssdNMMMMMNNNmds/::::::::::
-oooo++++++++oossyhddmmmdhs+/ohdNMMMNhyo+/--``````````````````` ````````..-:syhmNNMMMNNNd+::::::::://
-ooooo+++++++oossyhddmmmdy+/+ydNNNdyo+/...````````....`````````````````....-::+oymMMMMMMd+::::::::///
-oooooooo+++ooossyhddmdho+ohNNNNdy+:-.``````..----::---......------...-..````.-:oydNNNMMMmy+/::::////
-oooooooooooooossyhhdds:-odmNdhyo/:-...-:///////////:-......-::://///:----......-/+shdNNMMMmy+///////
-oooooooooooooossyyhdy/.-/so+/:::::/sdmNMMMMNmds++//:-......-:://+++oshmmmmdho/:://++shmNMMMNy+//++++
-sooooooooooooossyyhhs:..-......-::+dNNMMMMMMNNNd+:-.......---::/+ydNNMMMMMMNNmyo//::::+ymMMMdo++++++
-sssooooooooooossyyhhs:.....-......-+dmNMMMMMNNNd:...`````...--::smNNNMMMMMMNNd+:::----:/sdNNmso+oooo
-ssssssooooooooossyhhs:--------......:sdNMMMNNddo.```````````..-:sdNNNNMMMMNNNo-------::/+ymNdo+ooooo
-ssssssssoooooosssyyhy/::--::-----.....-:///:-..`````` `````.-///oydmNNmho:-------::://osss+oooooo
-sssssssssoooosssyyhhy+:::::::::::--.........```````` `````````....----::::-------::::////////++++ooo
-sssssssssssssssssyhhho::::::////:::-...``````````````.``..``........----------:::://////////::::::::
-ssssssssssssssssyyyhhy+:::://////:::-..````````..-:/+/:+o++/:--...........----:::///////////-.......
-ysssssssssssssssyyhhhy+/:////++///:::---..```...:sNNNNmmNNMNh+:-.......---:::::////////////:.`````..
-yyyyssssssssssssyyhhddy+//+++++++++//::::....```:hNMMMMMMMMMNy:-.--...--::::://////////////-..````..
-yyyyyyysssssssssyyhhddhs++++++++++++///:---......:smMMMMMMNho:-.------:::://///+++/////////:-.......
-yyyyyyyyyyyssssyyyhhddhs+/////////////:-...-::::///odMMMNdo///:::::-----::://////++++++////:--......
-yyyyyyyyyssssssssyyhhddhs+/+++++++++/:--:::///////+osdNNho++////////:::-:///////////++++//::----....
-yyyyyyyyyysssssssyyhhdmmdyo+++//////+/://///+/++++osyhmmdyoo+++//////:::::///+++++++///+//:::-------
-yyyyyyyyyyyyyyyyyyhhddddhs+//++ooo+++++//////++oossyhddddhyoo+++++//////////////+++++++///::::------
-hhyyyyyyyyyyyyyyyyyyyhddmmhs+++++++++++++++++oosyhhhhyyyyyyyyyso++++////////+///////++++///:::::----
-hhhhyyyyyyyysssssyhddmmNNNmho//++++ooo+++++ooossysssssssssossssoo+++++////////+++++///////::::::::--
-hhhhhyyyyyyyyyyyyhhddmmNNmdhyo++ooo+++++++ooooooooooooooo+++++++++++++++//++////++++++/////:::::::::
-hhhhhyyyyyyyyyyyhhhddddddmmmhyo+oo++++ooooooooooooooooo+++++++++++++++++++++++++++++++++/////:::::::
-hhhhhhhhhhhhhhhhhhhhhhddmmmNmhs+++o+ooooooooooooooooooooooooooooooo+++++++++++++++++++++/////::///::
-
+	
+r:rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr;r
+r__________________________________________________________________________________________________________.
+r.ssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrsrr
+r.ssrrrrrrrrrrrrr;;;;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr;;;;rrrrrrrrrrrrrrs;r
+r_rrrrrrrrrrrrr;riir;:,,::;;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr;;::,:;sii;;;rrrrrrrrrrrrr:r
+r_rrrrrrrrrrrr;i@@@@@@@@Ai:,,:;;;;rrrrrrrrrrrrr;;;;;;;;;;;;;;;rrrrrrrrrrrrr;;:,,:iB@@@@@@@@;:;;rrrrrrrrrrr:r
+r_rrrrrrrrrrrr:@@@@@@@@@@@@@Hr,,:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:,:i#@@@@@@@@@@@@@,;;rrrrrrrrrrr:r
+r_rrrrrrrrrrr:S@@@@@@@@@@@@@@@@#s,,:;;;:::,,,,,::;;;rrrrr;;;;:,.,,,,,:;:,:i@@@@@@@@@@@@@@@@@;:;rrrrrrrrrrr:r
+r_rrrrrrrrrrr:@@@@@@@@@@@@@@@@@@@@M;,,;s2&#@@@@@@@@@@@@@@@@@@@@@@@#A2s;r@@@@@@@@@@@@@@@@@@@@H,;rrrrrrrrrrr:r
+r_rrrrrrrrrr;:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.;;rrrrrrrrrr:r
+r_rrrrrrrrrr;;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.;;rrrrrrrrrr:r
+r_rrrrrrrrr;::@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@::;rrrrrrrrrr:r
+r_rrrrrrrrr;::@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.;;rrrrrrrrrr:r
+r_rrrrrrrrr;:,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.;;rrrrrrrrrr:r
+r_rrrrrrrrr;;.H@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2.;;rrrrrrrrrr:r
+r_rrrrrrrrr;;.:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@i_:;;rrrrrrrrr:r
+r_rrrrrrrrr;;.r@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@:,;;rrrrrrrr:r
+r_rrrrrrrrr;:#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@r,;;rrrrrrr:r
+r_rrrrrrrr;:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@s,;;rrrrrr:r
+r_rrrrrrr;:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@s,;;rrrrr:r
+r_rrrrrrr,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@::;;rrrr:r
+r_rrrrrr:A@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@,;;rrrr:r
+r_rrrrr;;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@i,;;rrr:r
+r_rrrrr:A@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.;;rrr:r
+r_rrrr;:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@;:;rrr:r
+r_rrrr:r@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2,;rrr:r
+r_rrrr:r@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@3,;rrr:r
+r_rrr;:;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@X,;rrr:r
+r_rrr;:;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@X,;rrr:r
+r_rrr;:;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@X,;rrr:r
+r_rrr;:;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@X,;rrr:r
+r_rrr;::@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@i,;rrr:r
+r_rrr;;_@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@r:;rrr:r
+r_rrr;;.X@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.;;rrr:r
+r_rr;;;,:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@_;;;rr:r
+;_::::,._A@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@r_,::::.;
+95####MH9G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@XHM####Ah
+2;h93332S;&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Ai23X339iX
+r_rrrriisrs@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@i55iisrr:s
+H3@@##HHH9S;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@SS9AHAB#@#A
+r_:,.......__@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@;_.,,....,_r
+r_;;;;;;;;::._G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@;_:;;;;;;;;:r
+r_r;;;;;;;;;:,_:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@..;;;;;;;;;;:r
+r_rrrrrrrr;;;:,__r@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@r_,;;rrrrrrrrr:r
+r_rrrr;;;;;;;;;:,__r@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@r__:;;rrrrrrrrrr:r
+r_rrr:,,,,:;;;;;;:,__.S@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@X,__,;;rrrrrrrrrrrr:r
+r_rrrA#@B9r:,:;;;;;:,.___;G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Ms.__.:;;;rrrrrrrrrrrrr:r
+r_r:G@@@@@@@@i,:;;;;;::,.____,s9#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AS:.___.::;;rrrrrrrrrrrrrrrr:r
+r_r;:&@@@@@@@@@i,:;;;;;;;::,,._____.,rsi5@@@@@@@@@@@@@@@@@@@@@@@@@@@@isir:._____.,::;;;rrrrrrrrrrrrrrrrrrr:r
+r_r;:__;@@@@@@@@@,:;;rr;;;;;;;:::,,..__.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@h___..,,:::;;;;rrrrrrrrrrrrrrrrrrrrrr:r
+r_r;;:,__,@@@@@@@@,,;;;rrrr;;;;;;;;;;,3@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@;.:;;;;;;rrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rr;;;:,__H@@@@@@@r.:;;;;rrrrrrrr;;:X@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@;,;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrr;;;;:._A@@@@@@@#:.:;;;;;;;;;;:::@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@,;;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrrrr;;;:,_#@@@@@@@@@5:,,,,,,,,:s2@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@S,;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrrrrr;;;:,_@@@@@@@@@@@@@@##@@@@@@@@@@@@@@@@@@@@@@@@,s@@@@@@@@@@@@@@@@@H.;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrrrrrr;;;:.:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@r@@@@@@@@_;@@@@@@@@r@@@@@@@@@.;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrrrrrrr;;;:.,@@@@@@@@@@@@@@@@@@@@@@@@@@@@.;@@@@@@@@.r@@@@@@@@_5@@@@@@@@,;;rrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrrrrrrrr;;;:._h@@@@@@@@@@@@@@@@@@@@@@@@@@_r@@@@@@@@.r@@@@@@@@.:@@@@@@@@,;;rrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrrrrrrrrr;;;:._.2@@@@@@@@@@@@@@@@@@@@@@@@_i@@@@@@@@.r@@@@@@@@,,@@@@@@@@,;;rrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrrrrrrrrrr;;;::.__,s&@@@@@@@@@@@@@@@@@@@@_i@@@@@@@@.r@@@@@@@@,:@@@@@@@@,;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_rrrrrrrrrrrrrr;;;:,,_____.....____@@@@@@@@_S@@@@@@@@.r@@@@@@@@,:@@@@@@@@,;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:r
+r_srrrrrrrrrrrrrrrrr;;;::::,,,,,,:,:@@@@@@@@_5@@@@@@@@.i@@@@@@@@:;@@@@@@@@,;rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr;r
+r_.................................,#@@@@@@H.r@@@@@@@@,;@@@@@@@@,:@@@@@@@9.................................,
 
 
 
