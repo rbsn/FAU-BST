@@ -3,8 +3,10 @@
 # --- MAKROS ---
 
 # Set up Compiler
-CXX=g++	
+CC=g++	
+CFLAGS=-c -Wall
 
+LDFLAGS=
 
 SOURCES=main.cc hal.cc
 
@@ -16,11 +18,12 @@ TARGET=test
 all: $(SOURCES) $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $@
+		$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
 
 .cc.o:
-	#(CC) $< -o $@
+		$(CC) $(CFLAGS) $< -o $@
 
 
 clean:
-	rm -rf *.o $(TARGET)
+		rm -rf *.o $(TARGET)

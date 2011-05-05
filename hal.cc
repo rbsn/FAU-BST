@@ -1,44 +1,55 @@
-
 #include "hal.h"
+CPU ** CPU::cpus;
+// maxcpus vom Benutzer vorgegeben
+int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
+	// Get the number of processorcs currently online
+	int cpu_count = sysconf(_SC_NPROCESSORS_ONLN);
+	if(maxcpus > cpu_count) 
+		maxcpus = cpu_count;
 
-
-int boot_cpus(void (*fn)(void), int maxcpus) {
-	int pid;
-
-	// allocating a CPU set
-	cpusetp = CPU_ALLOC(maxcpus);
-	if(cpusetp == NULL) {
-		cerr << "Error: CPU_ALLOC" << endl;
-		return ENOMEM;
-	}
-
-	CPU_ZERO(cpusetp);
+	CPU::cpus = new CPU *[maxcpus]; 
+	
 
 	for(int i = 0; i < maxcpus; ++i) {
+	
+		cpus[i] = new CPU();
+		cpus[i]->fn = fn;
+		cpus[i]->id = i;
 
-			// Stackreservierung
-			// Beschreibung TODO
-			void *stack = mmap(NULL, 4096, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN, -1, sysconf(_SC_PAGE_SIZE));
+		// Stackreservierung
+		cpus[i]->stack_begin = mmap(NULL, CONFIG_STACKSIZE, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN, -1, sysconf(_SC_PAGE_SIZE));
+		if (cpus[i]->stack_begin == (void *)-1) return errno;
+		cpus[i]->stack_end = ((char *) cpus[i]->stack_begin) + CONFIG_STACKSIZE - 1;
+		
 
-			if (stack == -1) return errno;
-
-			// Create child-process
-			// description TODO
-			if((pid = clone(fn, stack[4095], CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD, NULL)) == -1) {
-				return errno;
-			}
+		// Create child-process
+		if((cpus[i]->pid = clone(trampolinfkt , cpus[i]->stack_end, CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD, cpus[i])) == -1) {
+			return errno;
+		}
 			
-			// Set a process's CPU affinity mask
-			// description TODO
-			if(-1 == sched_setaffinity(pid, sizeof()
-
-			// getcpu oder anders?
 	}
+
+
+	// TODO: Return-Value?
+	return 0;
 
 }
 
+int trampolinfkt(void *p) {
+	
+	CPU *cpu = (CPU *) p; 
 
-long getOnlineCPUs() {
-	// Get the number of processorcs currently online
-	return sysconf(_SC_NPROCESSORS_ONLN);
+	cpu_set_t cpusetp;
+	CPU_ZERO(&cpusetp);
+	CPU_SET(cpu->id, &cpusetp);
+	
+	// Set a process's CPU affinity mask
+	if(-1 == sched_setaffinity(0, sizeof(cpusetp), &cpusetp)) {
+		return errno;
+	}
+
+	cpu->fn();
+	
+	// TODO: Return-Value?
+	return 0;
 }

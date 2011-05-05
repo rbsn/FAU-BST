@@ -5,15 +5,21 @@
 
 using namespace std;
 
+void hello(void) {
+	while(1) {
+		
+		cout << "Hallo Welt!"<< endl;
+
+	}
+}
+
+
+
 int main() {
 
+	CPU::boot_cpus(hello, sysconf(_SC_NPROCESSORS_ONLN));
 
-	long numCPUs = getOnlineCPUs();
-
-	if(numCPUs == -1) {
-		cerr << "Error: getOnlineCPUs" << endl;
-		return -1;
-	}
+	// Waitpid noch einstellen!!
 
 	return 0;
 
