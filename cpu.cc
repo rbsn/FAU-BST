@@ -1,6 +1,7 @@
 #include "cpu.h"
 
 CPU ** CPU::cpus;
+unsigned int CPU::counter = 0;
 
 // maxcpus vom Benutzer vorgegeben
 int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
@@ -55,3 +56,11 @@ int CPU::trampolinfkt(void *p) {
 	// TODO: Return-Value?
 	return 0;
 }
+
+int CPU::cpu_stack(int *addr) {
+	for(unsigned int i = 0; i < counter; i++) {
+		if(addr <= cpus[i]->stack_end && addr >= cpus[i]->stack_begin) return i;
+	}
+	return -1;
+}
+

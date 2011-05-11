@@ -19,5 +19,6 @@
 
 int start_cpus(void (*fn)(void), int);
 int getcpuid();
+int getcpuidopt();
 
 #endif

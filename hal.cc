@@ -15,3 +15,9 @@ int getcpuid() {
 
 	return cpuid;
 }
+
+int getcpuidopt() {
+	int addr;
+	return CPU::cpu_stack(&addr);
+}
+

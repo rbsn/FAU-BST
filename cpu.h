@@ -23,9 +23,10 @@ class CPU {
 
 public:
 	static int boot_cpus(void (*fn)(void), int maxcpus);
-	
+	static int cpu_stack(int *);
+
 	CPU() {
-		
+		counter++;
 	}
 
 	int id;			// CPU-ID
@@ -36,6 +37,7 @@ private:
 	int pid;		// Processor-ID = Thread-ID
 
 	static CPU **cpus;
+	static unsigned int counter;
 	static int trampolinfkt(void *);
 };
 
