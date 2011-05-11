@@ -10,15 +10,14 @@
 
 
 // INCLUDES
-
 #include <unistd.h>
-#include <sys/mman.h>
+#include <sys/syscall.h>
 #include <sched.h>
 
 #include <errno.h>
 #include "cpu.h"
 
-int trampolinfkt(void *);
-
+int start_cpus(void (*fn)(void), int);
+int getcpuid();
 
 #endif

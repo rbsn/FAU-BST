@@ -8,7 +8,7 @@ CFLAGS=-c -Wall
 
 LDFLAGS=
 
-SOURCES=main.cc hal.cc
+SOURCES=main.cc hal.cc cpu.cc
 
 OBJECTS=$(SOURCES:.cc=.o)
 
