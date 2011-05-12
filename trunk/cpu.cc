@@ -1,17 +1,24 @@
 #include "cpu.h"
 
 CPU ** CPU::cpus;
+O_Stream * CPU::stream;
+bool CPU::cpus_booted;
 unsigned int CPU::counter = 0;
 
 // maxcpus vom Benutzer vorgegeben
 int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
+	// CPUs already booted?
+	if(cpus_booted) return -1;
+	else cpus_booted = true;
+
 	// Get the number of processorcs currently online
 	int cpu_count = sysconf(_SC_NPROCESSORS_ONLN);
 	if(maxcpus > cpu_count) 
 		maxcpus = cpu_count;
 
-	CPU::cpus = new CPU *[maxcpus]; 
+	CPU::cpus = new CPU *[maxcpus]; //After: counter = maxcpus
 	
+//	stream = new O_Stream();
 
 	for(int i = 0; i < maxcpus; ++i) {
 	
@@ -32,10 +39,13 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 			
 	}
 
-
 	// TODO: Return-Value?
 	return cpus[0]->pid;
 
+}
+
+O_Stream *CPU::getStream() {
+	return CPU::stream;
 }
 
 int CPU::trampolinfkt(void *p) {
@@ -57,10 +67,14 @@ int CPU::trampolinfkt(void *p) {
 	return 0;
 }
 
-int CPU::cpu_stack(int *addr) {
+int CPU::getcpuid() {
+	int addr;
 	for(unsigned int i = 0; i < counter; i++) {
-		if(addr <= cpus[i]->stack_end && addr >= cpus[i]->stack_begin) return i;
+		if(&addr <= cpus[i]->stack_end && &addr >= cpus[i]->stack_begin) return i;
 	}
 	return -1;
 }
 
+int CPU::getNumOfBootedCPUs() {
+	return counter;
+}

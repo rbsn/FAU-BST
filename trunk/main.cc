@@ -1,4 +1,4 @@
-#include "hal.h"
+#include "cpu.h"
 #include <iostream>
 #include <stdio.h>
 #include <unistd.h>
@@ -7,18 +7,21 @@
 #include <errno.h>
 //#include <stdlibc>
 
+//extern O_Stream *stream;
 
 using namespace std;
 
 void hello(void) {
-
-	unsigned int cpuid = getcpuidopt();	
+	O_Stream my_stream;// = *CPU::getStream();
+	
+	unsigned int cpuid = CPU::getcpuid();	
 	for(int i = 0 ; i < 5; i++) {
-		cout << "[CPU_" << cpuid << "] Hallo Welt " << i << "! PID: " << (int) getpid() << endl;
+		//stream << "[CPU_" << cpuid << "] Hallo Welt " << i << "! PID: " << (int) getpid() << endl;
+		my_stream << "Hello" << endl;
 		for(volatile int j = 0; j < 500000000; j++);
 	}
 	
-	cout << "[CPU_" << cpuid << "] Finished." << SYS_tgkill << endl;
+//	cout << "[CPU_" << cpuid << "] Finished." << SYS_tgkill << endl;
 	
 	if(0 != syscall(SYS_tgkill, (int)getpid(), (int)getpid(), (int)SIGUSR2)) {
 		perror("syscall");
@@ -53,17 +56,17 @@ int main() {
 		return errno;
 	}
 
-	start_cpus(hello, threads);
+	CPU::boot_cpus(hello, threads);
 
-	cerr << "[GF] cpus booted. Going to sleep" << endl;
+//	cerr << "[GF] cpus booted. Going to sleep" << endl;
 
 	for(int i = 0; i < threads; i++) {
 		if(-1 == sigsuspend(&mask)) perror("[GF] sigsuspend");
 
-		cerr << "[GF] a thread returned..." << endl;
+//		cerr << "[GF] a thread returned..." << endl;
 	}
 
-	cerr << "[GF] shutdown." << endl;
+//	cerr << "[GF] shutdown." << endl;
 
 	return 0;
 
