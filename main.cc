@@ -11,23 +11,31 @@
 using namespace std;
 
 void hello(void) {
-//while(1){
+
 	unsigned int cpuid = getcpuidopt();	
-for(int i = 0 ; i < 5; i++) {
-	cout << "[CPU_" << cpuid << "] Hallo Welt " << i << "! PID: " << (int) getpid() << endl;
-	int sleeping = cpuid + 1;
-	sleep(sleeping);
-}
+	for(int i = 0 ; i < 5; i++) {
+		cout << "[CPU_" << cpuid << "] Hallo Welt " << i << "! PID: " << (int) getpid() << endl;
+		for(volatile int j = 0; j < 500000000; j++);
+	}
+	
 	cout << "[CPU_" << cpuid << "] Finished." << SYS_tgkill << endl;
-	if(0 != syscall(SYS_tkill, (int)getpid(), (int)SIGUSR2)) {
+	
+	if(0 != syscall(SYS_tgkill, (int)getpid(), (int)getpid(), (int)SIGUSR2)) {
 		perror("syscall");
 	}
-//}
 }
 
-
+void sigs(int sig) {
+}
 
 int main() {
+	struct sigaction sa;
+	sa.sa_handler = sigs;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+
+	sigaction(SIGUSR2, &sa, NULL);
+
 	int threads = sysconf(_SC_NPROCESSORS_ONLN);
 
 	sigset_t mask;
@@ -47,15 +55,15 @@ int main() {
 
 	start_cpus(hello, threads);
 
-	cout << "[GF] cpus booted. Going to sleep" << endl;
+	cerr << "[GF] cpus booted. Going to sleep" << endl;
 
 	for(int i = 0; i < threads; i++) {
 		if(-1 == sigsuspend(&mask)) perror("[GF] sigsuspend");
 
-		cout << "[GF] a thread returned..." << endl;
+		cerr << "[GF] a thread returned..." << endl;
 	}
 
-	cout << "[GF] shutdown." << endl;
+	cerr << "[GF] shutdown." << endl;
 
 	return 0;
 

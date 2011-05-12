@@ -22,7 +22,7 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 		// Stackreservierung
 		cpus[i]->stack_begin = mmap(NULL, CONFIG_STACKSIZE, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN, -1, sysconf(_SC_PAGE_SIZE));
 		if (cpus[i]->stack_begin == (void *)-1) return errno;
-		cpus[i]->stack_end = ((char *) cpus[i]->stack_begin) + CONFIG_STACKSIZE - 1;
+		cpus[i]->stack_end = ((char *) cpus[i]->stack_begin) + CONFIG_STACKSIZE - sizeof(char *);
 		
 
 		// Create child-process
