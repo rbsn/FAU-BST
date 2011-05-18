@@ -13,12 +13,19 @@ using namespace std;
 
 void hello(void) {
 	O_Stream my_stream;// = *CPU::getStream();
-	
 	unsigned int cpuid = CPU::getcpuid();	
+/*
+	char buf[2];
+	buf[0] = '0' + cpuid;
+	buf[1] = '\n';
+
+	write(STDERR_FILENO, buf, 2);
+*/	
 	for(int i = 0 ; i < 5; i++) {
 		//stream << "[CPU_" << cpuid << "] Hallo Welt " << i << "! PID: " << (int) getpid() << endl;
 		my_stream << "Hello" << endl;
 		for(volatile int j = 0; j < 500000000; j++);
+//		for(volatile int j = 0; j < 500000; j++);
 	}
 	
 //	cout << "[CPU_" << cpuid << "] Finished." << SYS_tgkill << endl;
@@ -61,7 +68,7 @@ int main() {
 //	cerr << "[GF] cpus booted. Going to sleep" << endl;
 
 	for(int i = 0; i < threads; i++) {
-		if(-1 == sigsuspend(&mask)) perror("[GF] sigsuspend");
+		sigsuspend(&mask);
 
 //		cerr << "[GF] a thread returned..." << endl;
 	}

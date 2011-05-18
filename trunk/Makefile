@@ -4,7 +4,7 @@
 
 # Set up Compiler
 CC=g++	
-CFLAGS=-c -Wall
+CFLAGS=-c -Wall -g -O3 
 
 LDFLAGS=
 

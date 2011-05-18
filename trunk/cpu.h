@@ -2,7 +2,7 @@
 #define CPU_H
 
 // DEFINES
-#define CONFIG_STACKSIZE (64 * 1024)
+#define CONFIG_STACKSIZE (2 * 1024 * 1024)
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE

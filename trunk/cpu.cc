@@ -55,12 +55,23 @@ int CPU::trampolinfkt(void *p) {
 	cpu_set_t cpusetp;
 	CPU_ZERO(&cpusetp);
 	CPU_SET(cpu->id, &cpusetp);
-	
+
+/*	char buf[2];
+	buf[0] = cpu->id + '0';
+	buf[1] = '\n';
+
+	write(STDERR_FILENO, buf, 2);
+*/
 	// Set a process's CPU affinity mask
 	if(-1 == sched_setaffinity(0, sizeof(cpusetp), &cpusetp)) {
 		return errno;
 	}
+/*
+	char buf1[2];
+	buf1[0] = cpu->id + '0';
+	buf1[1] = '\n';
 
+	write(STDERR_FILENO, buf1, 2); */
 	cpu->fn();
 	
 	// TODO: Return-Value?
