@@ -1,32 +1,57 @@
-#.PHONY all clean
+#.PHONY: all clean
 
-# --- MAKROS ---
+# --------------------------------------------------------------------------- #
+#																			  #
+#								M A K E F I L E								  #
+#																			  #
+# --------------------------------------------------------------------------- #
 
-# Set up Compiler
-CC=g++	
-CFLAGS=-c -Wall -g -O3 
+# ---------------------------------------------------------------------------
+# Liste der Quelltexte:
 
-LDFLAGS=
+#CC_SOURCES = $(shell find . -name "*.cc")
 
-SOURCES=main.cc o_stream.cc cpu.cc
+
+# ---------------------------------------------------------------------------
+# Liste der Makros:
+#		CXX:		Zu benutzender C++-Compiler
+#		CXXFLAGS:	Flags fuer den C++-Compileraufruf
+#		LD:			Zu benutzender Linker
+#		LDFLAGS:	Flags fuer den Linkeraufruf
+#		OBJDIR:	 	Verzeichnis, in dem die Objektdateien abgelegt werden
+
+CXX = g++	
+CXXFLAGS = -Wall -g -O3 
+
+LD = 
+LDFLAGS =
+
+
+#OBJDIR = ./build
+
+#(OBJDIR)/%.o : %.cc	
+#	$(VERBOSE) $(CXX) $(CXXFLAGS) $(OBJDIR)/$*.o $@ $<
+
+SOURCES= main.cc o_stream.cc irq.cc cpu.cc
 
 OBJECTS=$(SOURCES:.cc=.o)
 
 TARGET=test
 
-
 all: .cc $(TARGET)
 
 .cc:
-	$(CC) $(SOURCES)
+	$(CXX) $(SOURCES)
 
 $(TARGET): $(OBJECTS)
-		$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+		$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
 
 
 .cc.o:
-		$(CC) $(CFLAGS) $< -o $@
+		$(CXX) $(CXXFLAGS) $< -o $@
 
 
 clean:
-		rm -rf *.o $(TARGET)
+	rm -rf $(OBJECTS)
+#	rm -rf $(OBJDIR)/*.o
+	rm -rf a.out

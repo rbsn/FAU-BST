@@ -11,13 +11,15 @@
 
 
 // INCLUDES
-
-#include <unistd.h>
+#include "o_stream.h"
+#include <errno.h>
+#include <iostream>
+#include <sched.h>
+#include <signal.h>
+#include <stdio.h>
 #include <sys/mman.h>
 #include <sys/syscall.h>
-#include <sched.h>
-#include <errno.h>
-#include "o_stream.h"
+#include <unistd.h>
 
 class O_Stream;
 
@@ -26,25 +28,43 @@ class CPU {
 public:
 	static int boot_cpus(void (*fn)(void), int maxcpus);
 	static int getcpuid();
-	static int getNumOfBootedCPUs();
+	
+	// get the number of CPUs that have been booted
+	inline static int getNumOfBootedCPUs() {
+		return counter;
+	}
+
 	static O_Stream *getStream();
 
 	static O_Stream *stream;
 
+	// Konstruktor
 	CPU() {
 		counter++;
 	}
+	
+	// Destruktor
+	~CPU() {
+		counter--;
+	}
 
-	int id;			// CPU-ID
+	inline static sigset_t *getMask(int cpuid) {
+		return cpus[cpuid]->mask;
+	}
+
+
+	int id;				// CPU-ID
 	void (*fn)(void);
 private:
 	void *stack_begin;	// Stack-Beginn
 	void *stack_end; 	// Stack-Ende
-	int pid;		// Processor-ID = Thread-ID
-	
+	int pid;			// Processor-ID = Thread-ID
+
+	sigset_t *mask;
+
 	static bool cpus_booted;
 	static CPU **cpus;
-	static unsigned int counter;
+	static unsigned int counter;		// counter for #(CPUs)
 	static int trampolinfkt(void *);
 };
 

@@ -3,7 +3,11 @@
 CPU ** CPU::cpus;
 O_Stream * CPU::stream;
 bool CPU::cpus_booted;
+// Initial Value
 unsigned int CPU::counter = 0;
+
+
+using namespace std;
 
 // maxcpus vom Benutzer vorgegeben
 int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
@@ -12,13 +16,17 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 	else cpus_booted = true;
 
 	// Get the number of processorcs currently online
-	int cpu_count = sysconf(_SC_NPROCESSORS_ONLN);
-	if(maxcpus > cpu_count) 
-		maxcpus = cpu_count;
+	int cpus_online = sysconf(_SC_NPROCESSORS_ONLN);
 
+	// #(CPUs, die gebooted werden) = min{maxcpus, cpus_online}
+	if(maxcpus > cpus_online) {
+		cout << "You want to use " << maxcpus << " CPUs but there are only " << cpus_online << " CPUs available." << endl << endl;
+		maxcpus = cpus_online;
+	}
+
+	// Array von Zeigern auf maxcpus CPU-Objekte
 	CPU::cpus = new CPU *[maxcpus]; //After: counter = maxcpus
 	
-//	stream = new O_Stream();
 
 	for(int i = 0; i < maxcpus; ++i) {
 	
@@ -26,14 +34,22 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 		cpus[i]->fn = fn;
 		cpus[i]->id = i;
 
-		// Stackreservierung
-		cpus[i]->stack_begin = mmap(NULL, CONFIG_STACKSIZE, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN, -1, sysconf(_SC_PAGE_SIZE));
-		if (cpus[i]->stack_begin == (void *)-1) return errno;
+		// Stackreservierung mit mmap
+		cpus[i]->stack_begin = mmap(NULL, CONFIG_STACKSIZE, PROT_EXEC | PROT_READ | PROT_WRITE, 
+								MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN, -1, sysconf(_SC_PAGE_SIZE));
+		if ( cpus[i]->stack_begin == MAP_FAILED ) {
+			perror("[CPU] Error @ mmap");
+			return errno;
+		}
+
 		cpus[i]->stack_end = ((char *) cpus[i]->stack_begin) + CONFIG_STACKSIZE - sizeof(char *);
 		
 
-		// Create child-process
-		if((cpus[i]->pid = clone(CPU::trampolinfkt , cpus[i]->stack_end, CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD, cpus[i])) == -1) {
+		// Create child-process mit clone
+		cpus[i]->pid = clone(CPU::trampolinfkt , cpus[i]->stack_end, 
+							CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD, cpus[i]);
+		if ( cpus[i]->pid == -1 ) {
+			perror("[CPU] Error @ clone");
 			return errno;
 		}
 			
@@ -79,13 +95,13 @@ int CPU::trampolinfkt(void *p) {
 }
 
 int CPU::getcpuid() {
+	// Put an arbitrary variable on the stack and readout the stackpointer
 	int addr;
-	for(unsigned int i = 0; i < counter; i++) {
-		if(&addr <= cpus[i]->stack_end && &addr >= cpus[i]->stack_begin) return i;
-	}
-	return -1;
-}
 
-int CPU::getNumOfBootedCPUs() {
-	return counter;
+	for(unsigned int i = 0; i < counter; i++) {
+		if( (&addr <= cpus[i]->stack_end) && (&addr >= cpus[i]->stack_begin) ) 
+			return i;
+	}
+
+	return -1;
 }
