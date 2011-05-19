@@ -1,4 +1,4 @@
-#include "hal.h"
+#include "cpu.h"
 #include <iostream>
 #include <stdio.h>
 #include <unistd.h>
@@ -12,7 +12,7 @@ using namespace std;
 
 void hello(void) {
 
-	unsigned int cpuid = getcpuidopt();	
+	unsigned int cpuid = CPU::getCPUID();	
 	for(int i = 0 ; i < 5; i++) {
 		cout << "[CPU_" << cpuid << "] Hallo Welt " << i << "! PID: " << (int) getpid() << endl;
 		for(volatile int j = 0; j < 500000000; j++);
@@ -36,13 +36,14 @@ int main() {
 
 	sigaction(SIGUSR2, &sa, NULL);
 
-	int threads = sysconf(_SC_NPROCESSORS_ONLN);
-
+	//int threads = sysconf(_SC_NPROCESSORS_ONLN);
+	int threads = 16;
 	sigset_t mask;
 
 	sigfillset(&mask);
 	
-	cout << "Godfather's PID: " << getpid() << endl;
+//	cout << "Godfather's TID: " << (int) gettid() << endl;
+//	cout << "Godfather's PID: " << getpid() << endl;
 
 	if(-1 == sigdelset(&mask, SIGUSR2)) {
 		perror("sigdelset");
@@ -53,7 +54,7 @@ int main() {
 		return errno;
 	}
 
-	start_cpus(hello, threads);
+	CPU::boot_cpus(hello, threads);
 
 	cerr << "[GF] cpus booted. Going to sleep" << endl;
 
