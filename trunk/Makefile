@@ -2,56 +2,59 @@
 
 # --------------------------------------------------------------------------- #
 #																			  #
-#								M A K E F I L E								  #
-#																			  #
+# 								M A K E F I L E 							  #
+# 																			  #
 # --------------------------------------------------------------------------- #
 
 # ---------------------------------------------------------------------------
 # Liste der Quelltexte:
 
-#CC_SOURCES = $(shell find . -name "*.cc")
+CC_SOURCES = $(shell find . -name "*.cc")
+
 
 
 # ---------------------------------------------------------------------------
 # Liste der Makros:
-#		CXX:		Zu benutzender C++-Compiler
-#		CXXFLAGS:	Flags fuer den C++-Compileraufruf
-#		LD:			Zu benutzender Linker
-#		LDFLAGS:	Flags fuer den Linkeraufruf
-#		OBJDIR:	 	Verzeichnis, in dem die Objektdateien abgelegt werden
+# 		CXX: 		Zu benutzender C++-Compiler
+# 		CXXFLAGS: 	Flags fuer den C++-Compileraufruf
+# 		LD: 		Zu benutzender Linker
+# 		LDFLAGS: 	Flags fuer den Linkeraufruf
+# 		OBJDIR: 	Verzeichnis, in dem die Objektdateien abgelegt werden
 
-CXX = g++	
-CXXFLAGS = -Wall -g -O3 
+
+CXX = g++
+CXXFLAGS = -c -Wall -g -O3
 
 LD = 
 LDFLAGS =
 
+OBJDIR = ./build
 
-#OBJDIR = ./build
 
-#(OBJDIR)/%.o : %.cc	
-#	$(VERBOSE) $(CXX) $(CXXFLAGS) $(OBJDIR)/$*.o $@ $<
+# ---------------------------------------------------------------------------
 
-SOURCES= main.cc o_stream.cc irq.cc cpu.cc
 
-OBJECTS=$(SOURCES:.cc=.o)
+OBJECTS=$(CC_SOURCES:.cc=.o)
 
-TARGET=test
+TARGET=a.out
 
-all: .cc $(TARGET)
 
-.cc:
-	$(CXX) $(SOURCES)
+all: $(TARGET) 
 
 $(TARGET): $(OBJECTS)
-		$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
+	mkdir -p $(OBJDIR)
+	mv *.o $(OBJDIR)
 
 
-.cc.o:
-		$(CXX) $(CXXFLAGS) $< -o $@
+#.cc.o:
+#	$(CXX) $(CXXFLAGS) $< -o $@
 
+
+
+# ---------------------------------------------------------------------------
+# Clean loescht die erzeugten Dateien
 
 clean:
-	rm -rf $(OBJECTS)
-#	rm -rf $(OBJDIR)/*.o
-	rm -rf a.out
+	rm -rf $(OBJDIR) 
+	rm -rf $(TARGET)

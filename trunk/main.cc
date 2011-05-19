@@ -1,3 +1,4 @@
+#include "o_stream.h"
 #include "cpu.h"
 #include <errno.h>
 #include <iostream>
