@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean tar
 
   # -------------------------------------------------------------------------- ##
  #	    																	  # #
@@ -12,11 +12,12 @@
 # Liste der Quelltexte:
 
 CC_SOURCES = $(shell find . -name "*.cc")
-
+H_SOURCES = $(shell find . -name "*.h")
 
 
 # ---------------------------------------------------------------------------
 # Liste der Makros:
+#		ARCHIV:		tar.gz-Archiv
 # 		CXX: 		Zu benutzender C++-Compiler
 # 		CXXFLAGS: 	Flags fuer den C++-Compileraufruf
 # 		LD: 		Zu benutzender Linker
@@ -31,6 +32,8 @@ LD =
 LDFLAGS =
 
 OBJDIR = ./build
+
+ARCHIV = FAU-BST.tar.gz
 
 
 # ---------------------------------------------------------------------------
@@ -49,10 +52,6 @@ $(TARGET): $(OBJECTS)
 	mv *.o $(OBJDIR)
 
 
-#.cc.o:
-#	$(CXX) $(CXXFLAGS) $< -o $@
-
-
 
 # ---------------------------------------------------------------------------
 # Clean loescht die erzeugten Dateien
@@ -60,3 +59,10 @@ $(TARGET): $(OBJECTS)
 clean:
 	rm -rf $(OBJDIR) 
 	rm -rf $(TARGET)
+	rm -rf $(ARCHIV)
+
+# ---------------------------------------------------------------------------
+# Tar erzeugt ein Archiv
+
+tar:
+	tar -vcf $(ARCHIV) $(CC_SOURCES) $(H_SOURCES)
