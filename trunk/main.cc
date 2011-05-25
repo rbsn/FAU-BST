@@ -1,5 +1,8 @@
-#include "o_stream.h"
+// INCLUDES
 #include "cpu.h"
+#include "irq.h"
+#include "o_stream.h"
+#include "timer.h"
 #include <errno.h>
 #include <iostream>
 #include <signal.h>
@@ -11,32 +14,70 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 //extern O_Stream *stream;
 
 using namespace std;
 
+// Signalhandler
+void sighandler(int sig) {
+	
+	O_Stream my_stream;
+
+	switch(sig) {
+		case SIGUSR1:	
+			my_stream << "SIGUSR1  " << CPU::getcpuid() << "\n" << endl;
+			break;
+
+		case SIGCONT:
+			my_stream << "SIGCONT  " << CPU::getcpuid() << "\n" << endl;
+			break;
+						
+		case SIGALRM:
+			my_stream << "SIGALRM  " << CPU::getcpuid() << "\n" << endl;
+			IRQ::sendIPI(getpid(), SIGCONT);
+			break;
+		default:		break;
+	}
+
+}
 void hello(void) {
+			
 	O_Stream my_stream;// = *CPU::getStream();
 	//unsigned int cpuid = CPU::getcpuid();	
 	
-	
+	my_stream << "PID: " << getpid()<< endl;
+
+	int id = CPU::getcpuid();	
 	
 	int num;
   	/* initialize random seed: */
   	srand ( time(NULL) );
   	/* generate random number: */
- 	num = rand() * (-1);
+ 	num = rand();
 
 	// Ausgabe
-	for(int i = 0 ; i < 3; i++) {
-		//my_stream << "Hello" << endl;
-		my_stream << "Dezimal " << dec << num << endl;
-		my_stream << "Binaer " << bin << num << endl;
-		my_stream << "Octal " << oct << num << endl;
-		my_stream << "Hexadezimal " << hex << num << endl;
+	for(int i = 0 ; i < 100; i++) {
+	//	my_stream << "Hello " << id << endl;
+		//my_stream << "Dezimal " << dec << num << endl;
+		//my_stream << "Binaer " << bin << num << endl;
+		//my_stream << "Octal " << oct << num << endl;
+		//my_stream << "Hexadezimal " << hex << num << endl;
 		// generate a new random number
-		num = rand() * (-1);
-		
+		//num = rand() * (-1);
+	/*	
+		if(id > 5) {
+				my_stream << "signals rule the world  " << id << endl;
+				if(0 != syscall(SYS_tgkill, (int)getpid(), (int)getpid(), (int)SIGCONT)) {
+						perror("syscall");
+				}
+
+		}
+	*/
+	//	kill(getpid(), SIGCONT);
+	//	kill(getpid(), SIGUSR1);
+		//kill(getpid(), SIGALRM);
+	
 		for(volatile int j = 0; j < 500000000; j++);
 //		for(volatile int j = 0; j < 500000; j++);
 	}
@@ -46,9 +87,6 @@ void hello(void) {
 	}
 }
 
-// Signalhandler
-void sighandler(int sig) {
-}
 
 int main() {
 	struct sigaction sa;
@@ -59,10 +97,9 @@ int main() {
 	sigaction(SIGUSR2, &sa, NULL);
 
 	//int threads = sysconf(_SC_NPROCESSORS_ONLN);
-	int threads = 1;
+	int threads = 8;
 
 	sigset_t mask;
-
 	sigfillset(&mask);
 	
 	cout << "Godfather's PID: " << getpid() << endl;
@@ -76,8 +113,13 @@ int main() {
 		return errno;
 	}
 
+	IRQ::installHandler(SIGUSR1, sighandler, 1);
+	IRQ::installHandler(SIGCONT, sighandler, 1);
+	IRQ::installHandler(SIGALRM, sighandler, 1);
 	CPU::boot_cpus(hello, threads);
 
+	Timer alarm;
+	
 //	cerr << "[GF] cpus booted. Going to sleep" << endl;
 
 	for(int i = 0; i < threads; i++) {

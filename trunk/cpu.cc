@@ -5,6 +5,10 @@ O_Stream * CPU::stream;
 bool CPU::cpus_booted;
 // Initial Value
 unsigned int CPU::counter = 0;
+// DEFINES
+#ifndef OPTION
+#define OPTION 5
+#endif
 
 
 using namespace std;
@@ -65,29 +69,68 @@ O_Stream *CPU::getStream() {
 }
 
 int CPU::trampolinfkt(void *p) {
-	
+
 	CPU *cpu = (CPU *) p; 
 
 	cpu_set_t cpusetp;
 	CPU_ZERO(&cpusetp);
 	CPU_SET(cpu->id, &cpusetp);
 
-/*	char buf[2];
-	buf[0] = cpu->id + '0';
-	buf[1] = '\n';
+	sigset_t mask;
+	sigfillset(&mask);
 
-	write(STDERR_FILENO, buf, 2);
-*/
+	// Alle Signale blockieren
+	IRQ::lockIRQ(&mask); 	
+
+	sigemptyset(&mask);
+
+#if (OPTION == 1 || OPTION == 4 || OPTION == 5)
+	if(-1 == sigaddset(&mask, SIGUSR1)) {
+		perror("[CPU] sigaddset");
+		return errno;
+	}
+	#if( OPTION == 1)
+	if(-1 == sigaddset(&mask, SIGCONT)) {
+		perror("[CPU] sigaddset");
+		return errno;
+	}
+	#endif
+	IRQ::unlockIRQ(&mask);
+#endif
+
+#if (OPTION == 2 || OPTION == 4 || OPTION == 5)
+	// Laeuft nur auf CPU 1
+	if(cpu->id == 5) {
+			#if (OPTION == 2)
+			if(-1 == sigaddset(&mask, SIGUSR1)) {
+					perror("[CPU] sigaddset");
+					return errno;
+			}
+			#endif
+			if(-1 == sigaddset(&mask, SIGCONT)) {
+					perror("[CPU] sigaddset");
+					return errno;
+			}
+		IRQ::unlockIRQ(&mask);
+	}
+#endif
+
+#if (OPTION == 3 || OPTION == 5)
+	if(cpu->id == 6) {
+			if(-1 == sigaddset(&mask, SIGALRM)) {
+					perror("[CPU] sigaddset");
+					return errno;
+			}
+
+			IRQ::unlockIRQ(&mask);
+	}
+#endif
+
 	// Set a process's CPU affinity mask
 	if(-1 == sched_setaffinity(0, sizeof(cpusetp), &cpusetp)) {
 		return errno;
 	}
-/*
-	char buf1[2];
-	buf1[0] = cpu->id + '0';
-	buf1[1] = '\n';
-
-	write(STDERR_FILENO, buf1, 2); */
+	
 	cpu->fn();
 	
 	// TODO: Return-Value?

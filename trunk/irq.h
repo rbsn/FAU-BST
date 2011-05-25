@@ -14,15 +14,18 @@
 class IRQ {
 
 public:
-	// Signalhandler fuer IRQs installieren
+	// Signalhandler fuer IRQs installieren, ununterbrechbare Ausfuehrung des Signalhandlers
 	// Option = 1: x
 	// Option = 2: y
 	// Option = 3: z
 	static void installHandler(int sig, void (*signalhandler)(int), int option); 
 	// IRQs bzw. Signale zulassen
-	static void addIRQ(int sig);
+	// welche Signale werden von CPU angenommen (vgl. Interrupt Description Table im APIC)
+	
+	static void unlockIRQ(sigset_t *mask);
 	// IRQs bzw. Signale nicht zulassen
-	static void delIRQ(int sig);
+// welche Signale werden von CPU NICHT angenommen (vgl. Interrupt Description Table im APIC)
+	static void lockIRQ(sigset_t *mask);
 	
 	// InterProzessorInterrupt
 	static void sendIPI(int cpuID, int sig);

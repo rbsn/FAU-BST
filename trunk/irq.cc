@@ -1,7 +1,7 @@
 #include "irq.h"
 
 
-// Signalhandler fuer IRQs installieren
+// Signalhandler fuer IRQs installieren, ununterbrechbare Ausfuehrung des Signalhandlers
 // Option = 1: x
 // Option = 2: y
 // Option = 3: z
@@ -11,7 +11,7 @@ void IRQ::installHandler(int sig, void (*signalhandler)(int), int option) {
 	sa.sa_handler = signalhandler;	// Signalhandler zuweisen
 	sa.sa_flags = SA_RESTART;		
 
-	sigemptyset(&sa.sa_mask);		// Alle Signale auf 0, daher sind alle zugelassen
+	sigfillset(&sa.sa_mask);		// Alle Signale auf 1, daher sind alle ausgeschlossen
 
 	// Aktion (= Signalhandler) fuer sigaction struct festlegen
 	if( sigaction(sig, &sa, NULL) == -1) {
@@ -20,36 +20,29 @@ void IRQ::installHandler(int sig, void (*signalhandler)(int), int option) {
 }
 
 // IRQs bzw. Signale zulassen
-void IRQ::addIRQ(int sig) {
-	// Geblockt: in Maske auf 1
+// welche Signale werden von CPU angenommen (vgl. Interrupt Description Table im APIC)
+void IRQ::unlockIRQ(sigset_t *mask) {
 	
-	sigset_t mask; 		
-	sigemptyset(&mask); 	// Alle Signale auf 0
-	sigaddset(&mask, sig);	// Signal auf 1, alle anderen noch auf 0
-
 	// alle Signale auf 1 werden aus current mask entfernt (SIG_UNBLOCK) und damit zugelassen
-	if( syscall(SYS_rt_sigprocmask, SIG_UNBLOCK, &mask, NULL, 4) == -1) {
-		perror("[IRQ] Error @ rt_sigprocmask");
+	if( syscall(SYS_rt_sigprocmask, SIG_UNBLOCK, mask, NULL, 8) == -1) {
+		perror("[IRQ_unlock] Error @ rt_sigprocmask");
 	}
 } 
 
 // IRQs bzw. Signale nicht zulassen
-void IRQ::delIRQ(int sig) {
-	
-	sigset_t mask; 	
-	sigemptyset(&mask);		// Alle Signale auf 0
-	sigaddset(&mask, sig);	// Signal auf 1, alle anderen noch auf 0
+// welche Signale werden von CPU NICHT angenommen (vgl. Interrupt Description Table im APIC)
+void IRQ::lockIRQ(sigset_t *mask) {
 
 	// alle Signale auf 1 werden in current mask aufgenommen (SIG_BLOCK) und damit geblockt
-	if(	syscall(SYS_rt_sigprocmask, SIG_BLOCK, &mask, NULL, 4) == -1) {
-		perror("[IRQ] Error @ rt_sigprocmask");
+	if(	syscall(SYS_rt_sigprocmask, SIG_BLOCK, mask, NULL, 8) == -1) {
+		perror("[IRQ_lock] Error @ rt_sigprocmask");
 	}
 }
 
-// InterProzessorInterrupt
+// InterProzessorInterrupt der aufrufenden CPU an cpu_id
 void IRQ::sendIPI(int cpu_id, int sig) {
 	
-	if( syscall(SYS_tgkill, cpu_id, cpu_id, sig) == -1) {
+	if( syscall(SYS_tgkill, 5, cpu_id, sig) == -1) {
 		perror("[IRQ] Error @ tgkill");
 	}
 }

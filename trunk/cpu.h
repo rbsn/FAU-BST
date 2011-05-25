@@ -11,6 +11,7 @@
 
 
 // INCLUDES
+#include "irq.h"
 #include "o_stream.h"
 #include <errno.h>
 #include <iostream>
