@@ -74,24 +74,16 @@ O_Stream& O_Stream::operator<< (long ival) {
 	char tmp[SIZE_ARRAY];	
 
 	int i = 0;
+	int modulo;
 
-	if(base == 2 || base == 8 || base == 10) {
-		for(i = 0; ival != 0; ival /= base) {
-			tmp[++i] = '0' + (ival % base);
+	for(i = 0; ival != 0; ival /= base) {
+		modulo = ival % base;
+		if(modulo < 10) {
+			tmp[++i] = '0' + modulo;
+		} else {
+			tmp[++i] = 'A' + (modulo - 10);
 		}
-	} else {
-		for(i = 0; ival != 0; ival /= base) {
-			switch(ival % base) {
-				case 10:	tmp[++i] = 'A'; 	break;
-				case 11:	tmp[++i] = 'B'; 	break;
-				case 12:	tmp[++i] = 'C'; 	break;
-				case 13:	tmp[++i] = 'D'; 	break;
-				case 14:	tmp[++i] = 'E'; 	break;
-				case 15:	tmp[++i] = 'F'; 	break;
-				default:	tmp[++i] = '0' + (ival % base);
-			}
-		}
-	}	
+	}
 
 	while( i > 0 ) {
 		operator<<(tmp[i--]);
@@ -108,25 +100,17 @@ O_Stream& O_Stream::operator<< (unsigned long ival) {
 	
 	char tmp[SIZE_ARRAY];
 
-	int i;
-
-	if(base == 2 || base == 8 || base == 10) {
-		for(i = 0; ival != 0; ival /= base) {
-			tmp[++i] = '0' + (ival % base);
+	int i = 0;
+	int modulo;
+	
+	for(i = 0; ival != 0; ival /= base) {
+		modulo = ival % base;
+		if(modulo < 10) {
+			tmp[++i] = '0' + modulo;
+		} else {
+			tmp[++i] = 'A' + (modulo - 10);
 		}
-	} else {
-		for(i = 0; ival != 0; ival /= base) {
-			switch(ival % base) {
-				case 10:	tmp[++i] = 'A'; 	break;
-				case 11:	tmp[++i] = 'B'; 	break;
-				case 12:	tmp[++i] = 'C'; 	break;
-				case 13:	tmp[++i] = 'D'; 	break;
-				case 14:	tmp[++i] = 'E'; 	break;
-				case 15:	tmp[++i] = 'F'; 	break;
-				default:	tmp[++i] = '0' + (ival % base);
-			}
-		}
-	}	
+	}
 
 	while( i > 0 ) { 
 		operator<<(tmp[i--]);

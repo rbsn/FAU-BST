@@ -15,56 +15,51 @@
 #include <time.h>
 
 
-//extern O_Stream *stream;
-
 using namespace std;
 
-// Signalhandler
+// Signalhandler zum behandeln der Signale
 void sighandler(int sig) {
 	
 	O_Stream my_stream;
 
 	switch(sig) {
-		case SIGUSR1:	
-			my_stream << "SIGUSR1  " << CPU::getcpuid() << "\n" << endl;
-			break;
-
-		case SIGCONT:
-			my_stream << "SIGCONT  " << CPU::getcpuid() << "\n" << endl;
-			break;
+		case SIGUSR1:	my_stream << "SIGUSR1  " << CPU::getcpuid() << "\n" << endl;
+						break;
+		
+		case SIGCONT:	my_stream << "SIGCONT  " << CPU::getcpuid() << "\n" << endl;
+						break;
 						
-		case SIGALRM:
-			my_stream << "SIGALRM  " << CPU::getcpuid() << "\n" << endl;
-			IRQ::sendIPI(getpid(), SIGCONT);
-			break;
+		case SIGALRM:	my_stream << "SIGALRM  " << CPU::getcpuid() << "\n" << endl;
+						IRQ::sendIPI(getpid(), SIGCONT);
+						break;
+		
 		default:		break;
 	}
-
 }
+
 void hello(void) {
-			
-	O_Stream my_stream;// = *CPU::getStream();
-	//unsigned int cpuid = CPU::getcpuid();	
+	// Stream zum Ausgeben
+	O_Stream my_stream;
 	
-	my_stream << "PID: " << getpid()<< endl;
-
-	int id = CPU::getcpuid();	
+	int id = CPU::getcpuid();	// CPU-ID
+	int pid = getpid();			// PID
 	
-	int num;
-  	/* initialize random seed: */
-  	srand ( time(NULL) );
-  	/* generate random number: */
- 	num = rand();
+	my_stream << "PID: " << pid << endl;
 
-	// Ausgabe
+	// For random output
+	int number;
+  	srand ( time(NULL) );		// initialize random seed
+ 	// number = rand();			// generate random number
+	number = 31;
+
+	// Output
 	for(int i = 0 ; i < 100; i++) {
 	//	my_stream << "Hello " << id << endl;
-		//my_stream << "Dezimal " << dec << num << endl;
-		//my_stream << "Binaer " << bin << num << endl;
-		//my_stream << "Octal " << oct << num << endl;
-		//my_stream << "Hexadezimal " << hex << num << endl;
-		// generate a new random number
-		//num = rand() * (-1);
+		my_stream << "Dezimal " << dec << number << endl;
+		my_stream << "Binaer " << bin << number << endl;
+		my_stream << "Octal " << oct << number << endl;
+		my_stream << "Hexadezimal " << hex << number << endl;
+		//number = rand();		// generate a new random number
 	/*	
 		if(id > 5) {
 				my_stream << "signals rule the world  " << id << endl;
@@ -88,7 +83,7 @@ void hello(void) {
 }
 
 
-int main() {
+int main(int argc, char **argv) {
 	struct sigaction sa;
 	sa.sa_handler = sighandler;
 	sa.sa_flags = SA_RESTART;
@@ -113,9 +108,11 @@ int main() {
 		return errno;
 	}
 
+	// Signalhandler installieren, bei Eintritt eines der angegebenen Signale wird Signalbehandlung ausgefuehrt
 	IRQ::installHandler(SIGUSR1, sighandler, 1);
 	IRQ::installHandler(SIGCONT, sighandler, 1);
 	IRQ::installHandler(SIGALRM, sighandler, 1);
+	// CPUs starten
 	CPU::boot_cpus(hello, threads);
 
 	Timer alarm;

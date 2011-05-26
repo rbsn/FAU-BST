@@ -5,10 +5,19 @@ O_Stream * CPU::stream;
 bool CPU::cpus_booted;
 // Initial Value
 unsigned int CPU::counter = 0;
+
 // DEFINES
 #ifndef OPTION
 #define OPTION 5
 #endif
+
+/* Beschreibung der Optionen:
+	1:	SIGCONT und SIGUSR1 sind fuer jede CPU freigeschalten, werden von jeder behandelt
+	2:	SIGCONT und SIGUSR1 sind nur fuer eine vorher festgelegte CPU freigeschalten, werden von dieser behandelt
+	3:	SIGALRM ist nur fuer eine CPU freigeschalten, wird im Round-Robin-Verfahren behandelt
+	4:	SIGUSR1 wie Option 1, SIGCONT wie Option 2
+	5:	SIGUSR1 wie Option 1, SIGCONT wie Option 2, SIGALRM wie Option 3
+*/
 
 
 using namespace std;
