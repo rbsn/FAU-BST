@@ -1,12 +1,13 @@
-#ifndef CPU_H
-#define CPU_H
+#ifndef __CPU_H
+#define __CPU_H
 
 // DEFINES
-#define CONFIG_STACKSIZE (2 * 1024 * 1024)
+#define CONFIG_STACKSIZE 	2 * 1024 * 1024
+#define NUM_OF_SIGNAL 		256
+
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
-
 #endif
 
 
@@ -22,51 +23,77 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
+
 class O_Stream;
 
 class CPU {
 
 public:
 	static int boot_cpus(void (*fn)(void), int maxcpus);
+	
+	// Returns the CPU-ID on success, -1 on error
 	static int getcpuid();
 	
-	// get the number of CPUs that have been booted
-	inline static int getNumOfBootedCPUs() {
-		return counter;
-	}
+	// Returns the number of CPUs that have been booted
+	inline static int getNumOfBootedCPUs() { 	return num_of_cpus;		}
 
 	static O_Stream *getStream();
 
 	static O_Stream *stream;
 
-	// Konstruktor
-	CPU() {
-		counter++;
-	}
-	
-	// Destruktor
-	~CPU() {
-		counter--;
-	}
+	// Default constructor
+	CPU() {		m_of_cpus++;	}
+	// Default destructor
+	~CPU() {	num_of_cpus--;	}
+
 
 	inline static sigset_t *getMask(int cpuid) {
 		return cpus[cpuid]->mask;
 	}
 
+	// Returns the thread-ID of the CPU with commited cpu-ID
+	inline static int getTID(int cpuid) {
+		return cpus[cpuid]->tid;
+	}
 
-	int id;				// CPU-ID
+	int id;				// cpu-ID
+	
 	void (*fn)(void);
+	
+	// Gets the CPU that has to handle the commited signal
+	inline static int getSignalCounter(int signal) {
+		return signalProcessOrder[signal];
+	}
+	
+	// Sets the CPU that has to handle the commited signal
+	inline static void setSignalCounter(int signal, int cpuid) {
+		signalProcessOrder[signal] = cpuid;
+	}
+
+	// Increments the CPU that has to handle the commited signal (used for Round-Robin procedure)
+	inline static void incrSignalCounter(int signal) {
+		setSignalCounter(signal, (getSignalCounter(signal) + 1) % getNumOfBootedCPUs());
+	}
+	
+
 private:
-	void *stack_begin;	// Stack-Beginn
-	void *stack_end; 	// Stack-Ende
-	int pid;			// Processor-ID = Thread-ID
+	void *stack_begin;	// begin of the stack
+	void *stack_end; 	// end of the stack
+	
+	int tid;			// thread-ID = process-ID
+	
+	// counter for #(CPUs)
+	static unsigned int num_of_cpus;
 
 	sigset_t *mask;
 
-	static bool cpus_booted;
+	static bool cpus_booted; // TODO FIXME remove this? TODO FIXME
 	static CPU **cpus;
-	static unsigned int counter;		// counter for #(CPUs)
-	static int trampolinfkt(void *);
+
+	static int trampoline(void *);
+
+	// Array for #(SIGNALs), the result of the index represents the CPU that has to handle that signal
+ 	static int *signalProcessOrder;
 };
 
 #endif

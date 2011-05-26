@@ -1,46 +1,53 @@
 #include "cpu.h"
 
+int * CPU::signalProcessOrder;
 CPU ** CPU::cpus;
 O_Stream * CPU::stream;
 bool CPU::cpus_booted;
-// Initial Value
-unsigned int CPU::counter = 0;
+
+unsigned int CPU::num_of_cpus = 0;		// initial value for number of CPUs
 
 // DEFINES
 #ifndef OPTION
 #define OPTION 5
-#endif
-
-/* Beschreibung der Optionen:
-	1:	SIGCONT und SIGUSR1 sind fuer jede CPU freigeschalten, werden von jeder behandelt
-	2:	SIGCONT und SIGUSR1 sind nur fuer eine vorher festgelegte CPU freigeschalten, werden von dieser behandelt
-	3:	SIGALRM ist nur fuer eine CPU freigeschalten, wird im Round-Robin-Verfahren behandelt
-	4:	SIGUSR1 wie Option 1, SIGCONT wie Option 2
-	5:	SIGUSR1 wie Option 1, SIGCONT wie Option 2, SIGALRM wie Option 3
+/* Description of the different options:
+	1:	SIGCONT and SIGUSR1 are activated for every CPU, so these signals will be treated by every CPU
+	2:	SIGCONT and SIGUSR1 are activated only for one predefined CPU, so these signals will be treated by only this CPU
+	3:	SIGALRM is activated only for one CPU, so this signal will be treated in Round-Robin procedure
+	4:	SIGUSR1 will be treated like option 1, SIGCONT will be treated like option 2
+	5:	SIGUSR1 will be treated like option 1, SIGCONT will be treated like option 2, SIGALRM will be treated like option 3
 */
+#endif
 
 
 using namespace std;
 
 // maxcpus vom Benutzer vorgegeben
 int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
-	// CPUs already booted?
-	if(cpus_booted) return -1;
-	else cpus_booted = true;
 
-	// Get the number of processorcs currently online
+// TODO FIXME remove this? TODO FIXME
+// CPUs already booted?
+//	if(cpus_booted) return -1;
+//	else cpus_booted = true;
+
+	// Get the number of processors currently online
 	int cpus_online = sysconf(_SC_NPROCESSORS_ONLN);
 
-	// #(CPUs, die gebooted werden) = min{maxcpus, cpus_online}
+	// #(CPUs that will be booted) = min{maxcpus, cpus_online}
 	if(maxcpus > cpus_online) {
 		cout << "You want to use " << maxcpus << " CPUs but there are only " << cpus_online << " CPUs available." << endl << endl;
 		maxcpus = cpus_online;
 	}
 
-	// Array von Zeigern auf maxcpus CPU-Objekte
-	CPU::cpus = new CPU *[maxcpus]; //After: counter = maxcpus
-	
+	// Initialize the array for #(SIGNALs), first CPU that will handle an incoming signal will be CPU_0
+	CPU::signalProcessOrder = new int[NUM_OF_SIGNAL];
+	for(int i = 0; i < NUM_OF_SIGNAL; ++i) {
+		signalProcessOrder[i] = 0;	
+	}
 
+	// Array of pointers on maxcpus CPU-objects
+	CPU::cpus = new CPU *[maxcpus]; 
+	
 	for(int i = 0; i < maxcpus; ++i) {
 	
 		cpus[i] = new CPU();
@@ -59,9 +66,9 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 		
 
 		// Create child-process mit clone
-		cpus[i]->pid = clone(CPU::trampolinfkt , cpus[i]->stack_end, 
+		cpus[i]->tid = clone(CPU::trampoline , cpus[i]->stack_end, 
 							CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD, cpus[i]);
-		if ( cpus[i]->pid == -1 ) {
+		if ( cpus[i]->tid == -1 ) {
 			perror("[CPU] Error @ clone");
 			return errno;
 		}
@@ -69,7 +76,7 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 	}
 
 	// TODO: Return-Value?
-	return cpus[0]->pid;
+	return cpus[0]->tid;
 
 }
 
@@ -77,7 +84,7 @@ O_Stream *CPU::getStream() {
 	return CPU::stream;
 }
 
-int CPU::trampolinfkt(void *p) {
+int CPU::trampoline(void *p) {
 
 	CPU *cpu = (CPU *) p; 
 
@@ -125,14 +132,14 @@ int CPU::trampolinfkt(void *p) {
 #endif
 
 #if (OPTION == 3 || OPTION == 5)
-	if(cpu->id == 6) {
+	//if(cpu->id == 0) {
 			if(-1 == sigaddset(&mask, SIGALRM)) {
 					perror("[CPU] sigaddset");
 					return errno;
 			}
 
 			IRQ::unlockIRQ(&mask);
-	}
+	//}
 #endif
 
 	// Set a process's CPU affinity mask
@@ -150,7 +157,7 @@ int CPU::getcpuid() {
 	// Put an arbitrary variable on the stack and readout the stackpointer
 	int addr;
 
-	for(unsigned int i = 0; i < counter; i++) {
+	for(unsigned int i = 0; i < num_of_cpus; i++) {
 		if( (&addr <= cpus[i]->stack_end) && (&addr >= cpus[i]->stack_begin) ) 
 			return i;
 	}

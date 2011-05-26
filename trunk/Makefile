@@ -39,15 +39,15 @@ ARCHIV = FAU-BST.tar.gz
 # ---------------------------------------------------------------------------
 
 
-OBJECTS=$(CC_SOURCES:.cc=.o)
+CC_OBJECTS=$(notdir $(CC_SOURCES:.cc=.o))
 
 TARGET=a.out
 
 
 all: $(TARGET) 
 
-$(TARGET): $(OBJECTS)
-	$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
+$(TARGET): $(CC_OBJECTS)
+	$(CXX) $(LDFLAGS) $(CC_OBJECTS) -o $@
 	mkdir -p $(OBJDIR)
 	mv *.o $(OBJDIR)
 
@@ -57,6 +57,7 @@ $(TARGET): $(OBJECTS)
 # Clean loescht die erzeugten Dateien
 
 clean:
+	rm -rf *.o
 	rm -rf $(OBJDIR) 
 	rm -rf $(TARGET)
 	rm -rf $(ARCHIV)

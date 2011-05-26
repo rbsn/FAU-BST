@@ -2,10 +2,7 @@
 
 
 // Signalhandler fuer IRQs installieren, ununterbrechbare Ausfuehrung des Signalhandlers
-// Option = 1: x
-// Option = 2: y
-// Option = 3: z
-void IRQ::installHandler(int sig, void (*signalhandler)(int), int option) {
+void IRQ::installHandler(int sig, void (*signalhandler)(int)) {
 		
 	struct sigaction sa;
 	sa.sa_handler = signalhandler;	// Signalhandler zuweisen
@@ -40,9 +37,9 @@ void IRQ::lockIRQ(sigset_t *mask) {
 }
 
 // InterProzessorInterrupt der aufrufenden CPU an cpu_id
-void IRQ::sendIPI(int cpu_id, int sig) {
+void IRQ::sendIPI(int cpuid, int sig) {
 	
-	if( syscall(SYS_tgkill, 5, cpu_id, sig) == -1) {
+	if( syscall(SYS_tgkill, getpid(), CPU::getTID(cpuid), sig) == -1) {
 		perror("[IRQ] Error @ tgkill");
 	}
 }

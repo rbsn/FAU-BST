@@ -29,8 +29,17 @@ void sighandler(int sig) {
 		case SIGCONT:	my_stream << "SIGCONT  " << CPU::getcpuid() << "\n" << endl;
 						break;
 						
-		case SIGALRM:	my_stream << "SIGALRM  " << CPU::getcpuid() << "\n" << endl;
-						IRQ::sendIPI(getpid(), SIGCONT);
+		case SIGALRM:	if(CPU::getcpuid() == CPU::getSignalCounter(SIGALRM)) {
+							my_stream << "SIGALRM  " << CPU::getcpuid() << "\n" << endl;
+							CPU::incrSignalCounter(SIGALRM);
+						} else {
+							my_stream << "Ich (" << CPU::getcpuid() << ") sende an (" << CPU::getSignalCounter(SIGALRM) << ")." << endl;
+							IRQ::sendIPI(CPU::getSignalCounter(SIGALRM), SIGALRM);
+						}
+						
+						//my_stream << "SIGALRM  " << CPU::getSignalCounter(SIGALRM) << "\n" << endl;
+
+
 						break;
 		
 		default:		break;
@@ -43,9 +52,10 @@ void hello(void) {
 	
 	int id = CPU::getcpuid();	// CPU-ID
 	int pid = getpid();			// PID
+	int tid = CPU::getTID(id);	// TID
 	
-	my_stream << "PID: " << pid << endl;
-
+	//my_stream << "ID: " << id << ", PID: " << pid << ", TID: " << tid << endl;
+	
 	// For random output
 	int number;
   	srand ( time(NULL) );		// initialize random seed
@@ -54,23 +64,29 @@ void hello(void) {
 
 	// Output
 	for(int i = 0 ; i < 100; i++) {
+	
+	
 	//	my_stream << "Hello " << id << endl;
-		my_stream << "Dezimal " << dec << number << endl;
-		my_stream << "Binaer " << bin << number << endl;
-		my_stream << "Octal " << oct << number << endl;
-		my_stream << "Hexadezimal " << hex << number << endl;
+	//	my_stream << "Dezimal " << dec << number << endl;
+	//	my_stream << "Binaer " << bin << number << endl;
+	//	my_stream << "Octal " << oct << number << endl;
+	//	my_stream << "Hexadezimal " << hex << number << endl;
 		//number = rand();		// generate a new random number
-	/*	
+		/*
 		if(id > 5) {
-				my_stream << "signals rule the world  " << id << endl;
+				//my_stream << "signals rule the world  " << id << endl;
 				if(0 != syscall(SYS_tgkill, (int)getpid(), (int)getpid(), (int)SIGCONT)) {
 						perror("syscall");
 				}
 
 		}
-	*/
-	//	kill(getpid(), SIGCONT);
-	//	kill(getpid(), SIGUSR1);
+		*/
+		if(id == 1) {
+		kill(getpid(), SIGCONT);
+		} 
+		if(id == 2) {
+		kill(getpid(), SIGUSR1);
+		}
 		//kill(getpid(), SIGALRM);
 	
 		for(volatile int j = 0; j < 500000000; j++);
@@ -109,9 +125,9 @@ int main(int argc, char **argv) {
 	}
 
 	// Signalhandler installieren, bei Eintritt eines der angegebenen Signale wird Signalbehandlung ausgefuehrt
-	IRQ::installHandler(SIGUSR1, sighandler, 1);
-	IRQ::installHandler(SIGCONT, sighandler, 1);
-	IRQ::installHandler(SIGALRM, sighandler, 1);
+	IRQ::installHandler(SIGUSR1, sighandler);
+	IRQ::installHandler(SIGCONT, sighandler);
+	IRQ::installHandler(SIGALRM, sighandler);
 	// CPUs starten
 	CPU::boot_cpus(hello, threads);
 
