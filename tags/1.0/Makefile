@@ -29,4 +29,4 @@ $(TARGET): $(OBJECTS)
 
 
 clean:
-		rm -rf *.o $(TARGET)
+		rm -rf *.o $(TARGET) a.out

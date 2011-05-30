@@ -42,7 +42,7 @@ public:
 	static O_Stream *stream;
 
 	// Default constructor
-	CPU() {		m_of_cpus++;	}
+	CPU() {		num_of_cpus++;	}
 	// Default destructor
 	~CPU() {	num_of_cpus--;	}
 
