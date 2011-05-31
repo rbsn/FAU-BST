@@ -1,17 +1,13 @@
 #ifndef __CPU_H
 #define __CPU_H
 
-// DEFINES
-#define CONFIG_STACKSIZE 	2 * 1024 * 1024
-#define NUM_OF_SIGNAL 		256
-
-
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
 
 
 // INCLUDES
+#include "defines.h"
 #include "irq.h"
 #include "o_stream.h"
 #include <errno.h>
@@ -87,7 +83,7 @@ private:
 
 	sigset_t *mask;
 
-	static bool cpus_booted; // TODO FIXME remove this? TODO FIXME
+	static bool cpus_booted; 
 	static CPU **cpus;
 
 	static int trampoline(void *);

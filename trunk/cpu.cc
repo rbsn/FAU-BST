@@ -3,7 +3,7 @@
 int * CPU::signalProcessOrder;
 CPU ** CPU::cpus;
 O_Stream * CPU::stream;
-bool CPU::cpus_booted;
+bool CPU::cpus_booted = false;
 
 unsigned int CPU::num_of_cpus = 0;		// initial value for number of CPUs
 
@@ -25,10 +25,10 @@ using namespace std;
 // maxcpus vom Benutzer vorgegeben
 int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 
-// TODO FIXME remove this? TODO FIXME
+
 // CPUs already booted?
-//	if(cpus_booted) return -1;
-//	else cpus_booted = true;
+	if(cpus_booted) return -1;
+	else cpus_booted = true;
 
 	// Get the number of processors currently online
 	int cpus_online = sysconf(_SC_NPROCESSORS_ONLN);

@@ -40,17 +40,20 @@ ARCHIV = FAU-BST.tar.gz
 
 
 CC_OBJECTS=$(notdir $(CC_SOURCES:.cc=.o))
+OBJPRE		= $(addprefix $(OBJDIR)/,$(CC_OBJECTS))
 
 TARGET=a.out
 
 
 all: $(TARGET) 
 
-$(TARGET): $(CC_OBJECTS)
-	$(CXX) $(LDFLAGS) $(CC_OBJECTS) -o $@
-	mkdir -p $(OBJDIR)
-	mv *.o $(OBJDIR)
+$(OBJDIR)/%.o: %.cc
+	@if test \( ! \( -d $(@D) \) \) ;then mkdir -p $(@D);fi
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+#	mv *.o $(OBJDIR)
 
+$(TARGET): $(OBJPRE)
+	$(CXX) $(LDFLAGS) -o $@ $(OBJPRE)
 
 
 # ---------------------------------------------------------------------------

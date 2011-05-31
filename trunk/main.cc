@@ -51,8 +51,8 @@ void hello(void) {
 	O_Stream my_stream;
 	
 	int id = CPU::getcpuid();	// CPU-ID
-	int pid = getpid();			// PID
-	int tid = CPU::getTID(id);	// TID
+	//int pid = getpid();			// PID
+	//int tid = CPU::getTID(id);	// TID
 	
 	//my_stream << "ID: " << id << ", PID: " << pid << ", TID: " << tid << endl;
 	
@@ -63,7 +63,7 @@ void hello(void) {
 	number = 31;
 
 	// Output
-	for(int i = 0 ; i < 100; i++) {
+	for(int i = 0 ; i < 10; i++) {
 	
 	
 	//	my_stream << "Hello " << id << endl;
