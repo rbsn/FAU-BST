@@ -10,6 +10,7 @@
 #include "defines.h"
 #include "irq.h"
 #include "o_stream.h"
+#include "queue.h"
 #include <errno.h>
 #include <iostream>
 #include <sched.h>
@@ -33,10 +34,6 @@ public:
 	// Returns the number of CPUs that have been booted
 	inline static int getNumOfBootedCPUs() { 	return num_of_cpus;		}
 
-	static O_Stream *getStream();
-
-	static O_Stream *stream;
-
 	// Default constructor
 	CPU() {		num_of_cpus++;	}
 	// Default destructor
@@ -44,7 +41,7 @@ public:
 
 
 	inline static sigset_t *getMask(int cpuid) {
-		return cpus[cpuid]->mask;
+		return &(cpus[cpuid]->mask);
 	}
 
 	// Returns the thread-ID of the CPU with commited cpu-ID
@@ -71,6 +68,21 @@ public:
 		setSignalCounter(signal, (getSignalCounter(signal) + 1) % getNumOfBootedCPUs());
 	}
 	
+	// Gets the TIP level of a CPU
+	inline static int getLevel(int cpuid) {		return cpus[cpuid]->level; 	} 
+
+	// Increments the TIP level of a CPU 
+	inline static void incrLevel(int cpuid) { 	cpus[cpuid]->level += 1; 	}
+	
+	// Decrements the TIP level of a CPU
+	inline static void decrLevel(int cpuid) { 	cpus[cpuid]->level -= 1; 	}
+
+	// O_Stream for output  -  every CPU uses this Output-Stream	 
+	static O_Stream *stream;
+
+	// Queue to store pending SLIHs	 -	every CPU got one itself
+	static Queue **queue;
+
 
 private:
 	void *stack_begin;	// begin of the stack
@@ -81,15 +93,21 @@ private:
 	// counter for #(CPUs)
 	static unsigned int num_of_cpus;
 
-	sigset_t *mask;
+	sigset_t mask;
 
-	static bool cpus_booted; 
+	// boolean that shows if CPUs were already booted
+	static bool booted; 
 	static CPU **cpus;
 
 	static int trampoline(void *);
 
 	// Array for #(SIGNALs), the result of the index represents the CPU that has to handle that signal
  	static int *signalProcessOrder;
+
+	// TIP-Level
+	//	* level=1 : only one critical section active
+	// 	* level=n : another critical sections active
+	int level;
 };
 
 #endif

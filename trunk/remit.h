@@ -5,17 +5,18 @@
 //INCLUDES
 #include "chain.h"
 
-// Jenes Objekt, welches in der Waitsnake zu stehen vermag
+// Represents a signalhandler-object that can be queued 
 class Remit : public Chain {
 
 public:
-	// Standard-Konstruktor
+	// Default constructor
 	Remit(void (*fkt)()) {
 		work = fkt;
 	}
-	// Destruktor
+	// Destructor
 	~Remit();
-
+	
+	// signalhandling-function 
 	void (*work)();
 
 private:

@@ -1,63 +1,82 @@
 #include "tip.h"
-Remit *defaultRemit;
-
-// Standard-Konstruktor
+/*
+Remit ** TIP::handler;
+Remit * defaultRemit;
+*/
+// Default constructor
 TIP::TIP() {
-//	Remit defaultRemit(panic);
+/*	handler = new Remit *[256];
+
+	// Signalhandler with a default signalhandling-function
 	defaultRemit = new Remit(panic);
 
 	for(int i = 0; i < NUM_OF_SIGNAL-1; i++) {
 		set_handler(defaultRemit, i);
 	}
+*/
 }
+
 
 // Destruktor
 TIP::~TIP() {
-
 }
 
-void TIP::panic() {
-	O_Stream my_stream;
-	my_stream << "'N Signal, du Looser!" << endl;
-}
 
-void TIP::tip_entry(int sig) {
-	level++;
+void TIP::tip_start(int sig) {	
+	// Increment of TIP level
+	CPU::incrLevel(CPU::getcpuid());
+
 	//signale freigeben
-	//register sichern???
-
-	// TODO:Spezifische start-fkt von remit obj
-	tip_start(sig);		// invoke associated FLIH
-
-	tip_check();		// fall into SLIH check
-
-}
-
-void TIP::tip_start(int sig) {
+	// Registersicherung NICHT  notwendig
 	//TODO: SYNCHRO
 
-	// Rrrremit in die Warteschlange einfuegen.
-	queue.enqueue(get_handler(sig));
-}
 
-void TIP::tip_check() {
-	if(level == 1) { 
-		while (!queue.isEmpty()) {
-			tip_clear();
+	sigset_t mask = *CPU::getMask(CPU::getcpuid());
+	// Durch Sperren des aktiven Signals wird dieses nicht erneut eingelocht
+	if(sigdelset(&mask, sig) == -1) {
+		perror("[TIP] Error @ sigdelset");		return;
+	}
+
+	// Rrrremit in die Warteschlange einfuegen.
+	//CPU::getQueue()->enqueue(get_handler(sig));
+	
+
+	if(CPU::getLevel(CPU::getcpuid()) == 1) { 
+		while (!(CPU::queue[CPU::getcpuid()]->isEmpty())) {
+			// Signale wieder freigeben mit Ausnahme des Aktiven
+			IRQ::unlockIRQ(&mask);
+			tip_clear(&mask);
+			// Signale wieder sperren (ALLE)
+			IRQ::lockIRQ(&mask);
 		}
 	}
 
-	level--;
+	// Decrement of TIP level
+	CPU::decrLevel(CPU::getcpuid());
+
+
+	// TODO
+	// ??? Evtl. Signale wieder sperren ???
+
 }
 
-void TIP::tip_clear() {
+
+
+// 
+void TIP::tip_clear(sigset_t *mask) {
 	Remit *next;
 	do { 
-		if((next = (Remit *)queue.dequeue()))
-				tip_unban(next); 
+		// Signale wieder sperren mit Ausnahme des AKTIven
+		IRQ::lockIRQ(mask);
+		
+		if((next = (Remit *) CPU::queue[CPU::getcpuid()]->dequeue())) {
+				IRQ::unlockIRQ(mask);
+				tip_unban(next);
+		} else IRQ::unlockIRQ(mask);
 	} while (next != 0);
 }
 
 void TIP::tip_unban(Remit *item) {
+	// SLIH
 	(item->work)();
 }

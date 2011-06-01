@@ -16,8 +16,9 @@ void Queue::enqueue (Chain* item) {
 // Ueberprueft, ob die Queue leer ist
 // -> Zum Ueberpruefen, ob relay noch einmal ausgefuehrt werden muss
 bool Queue::isEmpty() {
-	if(head == 0) return true;
-	else return false;
+	if(head == 0) 	return true;
+	
+	return false;
 }
 
 // DEQUEUE: Liefert das erste Element der Liste und entfernt es gleichzeitig

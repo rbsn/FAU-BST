@@ -3,6 +3,7 @@
 #include "irq.h"
 #include "o_stream.h"
 #include "timer.h"
+#include "tip.h"
 #include <errno.h>
 #include <iostream>
 #include <signal.h>
@@ -20,20 +21,23 @@ using namespace std;
 // Signalhandler zum behandeln der Signale
 void sighandler(int sig) {
 	
-	O_Stream my_stream;
+	O_Stream *my_stream = CPU::stream; //getStream();
+	//O_Stream my_stream;
 
 	switch(sig) {
-		case SIGUSR1:	my_stream << "SIGUSR1  " << CPU::getcpuid() << "\n" << endl;
+		case SIGUSR1:	
+						*my_stream << "SIGUSR1  " << CPU::getcpuid() << /*"\n" <<*/ endl;
+						//IRQ::sendIPI( 3 , SIGUSR2 );
 						break;
 		
-		case SIGCONT:	my_stream << "SIGCONT  " << CPU::getcpuid() << "\n" << endl;
+		case SIGCONT:	*my_stream << "SIGCONT  " << CPU::getcpuid() << /*"\n" <<*/ endl;
 						break;
 						
 		case SIGALRM:	if(CPU::getcpuid() == CPU::getSignalCounter(SIGALRM)) {
-							my_stream << "SIGALRM  " << CPU::getcpuid() << "\n" << endl;
+							*my_stream << "SIGALRM  " << CPU::getcpuid() << /*"\n" <<*/ endl;
 							CPU::incrSignalCounter(SIGALRM);
 						} else {
-							my_stream << "Ich (" << CPU::getcpuid() << ") sende an (" << CPU::getSignalCounter(SIGALRM) << ")." << endl;
+							*my_stream << "Ich (" << CPU::getcpuid() << ") sende an (" << CPU::getSignalCounter(SIGALRM) << ")." << endl;
 							IRQ::sendIPI(CPU::getSignalCounter(SIGALRM), SIGALRM);
 						}
 						
@@ -42,20 +46,25 @@ void sighandler(int sig) {
 
 						break;
 		
-		default:		break;
+		default:		// Diese Meldung duerfte NICHT ausgegeben werden! Andere Signale als die drei 
+						// obigen duerfen nicht durchkommen!
+						*my_stream << "Es kam Signal: " << sig << endl; 
+						break;
 	}
 }
 
 void hello(void) {
 	// Stream zum Ausgeben
-	O_Stream my_stream;
+	//O_Stream my_stream;
 	
 	int id = CPU::getcpuid();	// CPU-ID
-	//int pid = getpid();			// PID
-	//int tid = CPU::getTID(id);	// TID
+	/*
+	int pid = getpid();			// PID
+	int tid = CPU::getTID(id);	// TID
 	
-	//my_stream << "ID: " << id << ", PID: " << pid << ", TID: " << tid << endl;
-	
+	my_stream << "ID: " << id << ", PID: " << pid << ", TID: " << tid << endl;
+	*/
+
 	// For random output
 	int number;
   	srand ( time(NULL) );		// initialize random seed
@@ -87,10 +96,8 @@ void hello(void) {
 		if(id == 2) {
 		kill(getpid(), SIGUSR1);
 		}
-		//kill(getpid(), SIGALRM);
 	
 		for(volatile int j = 0; j < 500000000; j++);
-//		for(volatile int j = 0; j < 500000; j++);
 	}
 	
 	if(0 != syscall(SYS_tgkill, (int)getpid(), (int)getpid(), (int)SIGUSR2)) {
@@ -108,19 +115,19 @@ int main(int argc, char **argv) {
 	sigaction(SIGUSR2, &sa, NULL);
 
 	//int threads = sysconf(_SC_NPROCESSORS_ONLN);
-	int threads = 8;
+	int threads = 16;
 
 	sigset_t mask;
 	sigfillset(&mask);
 	
-	cout << "Godfather's PID: " << getpid() << endl;
+	//cout << "Godfather's PID: " << getpid() << endl;
 
 	if(-1 == sigdelset(&mask, SIGUSR2)) {
-		perror("sigdelset");
+		perror("[MAIN] sigdelset");
 		return errno;
 	}
 	if(-1 == sigdelset(&mask, SIGINT)) {
-		perror("sigdelset");
+		perror("[MAIN] sigdelset");
 		return errno;
 	}
 
@@ -128,9 +135,18 @@ int main(int argc, char **argv) {
 	IRQ::installHandler(SIGUSR1, sighandler);
 	IRQ::installHandler(SIGCONT, sighandler);
 	IRQ::installHandler(SIGALRM, sighandler);
+	
+
+
+/*
+	IRQ::installHandler(SIGUSR1, TIP::tip_start);
+	IRQ::installHandler(SIGCONT, TIP::tip_start);
+	IRQ::installHandler(SIGALRM, TIP::tip_start);
+*/
+
 	// CPUs starten
 	CPU::boot_cpus(hello, threads);
-
+	
 	Timer alarm;
 	
 //	cerr << "[GF] cpus booted. Going to sleep" << endl;
