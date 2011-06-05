@@ -19,22 +19,22 @@
 using namespace std;
 
 // Signalhandler zum behandeln der Signale
-void sighandler(int sig) {
+/*void sighandler(int sig) {
 	
-	O_Stream *my_stream = CPU::stream; //getStream();
+	O_Stream *my_stream = CPU::stream[CPU::getcpuid()]; //getStream();
 	//O_Stream my_stream;
 
 	switch(sig) {
 		case SIGUSR1:	
-						*my_stream << "SIGUSR1  " << CPU::getcpuid() << /*"\n" <<*/ endl;
+						*my_stream << "SIGUSR1  " << CPU::getcpuid() <<  endl;
 						//IRQ::sendIPI( 3 , SIGUSR2 );
 						break;
 		
-		case SIGCONT:	*my_stream << "SIGCONT  " << CPU::getcpuid() << /*"\n" <<*/ endl;
+		case SIGCONT:	*my_stream << "SIGCONT  " << CPU::getcpuid() <<  endl;
 						break;
 						
 		case SIGALRM:	if(CPU::getcpuid() == CPU::getSignalCounter(SIGALRM)) {
-							*my_stream << "SIGALRM  " << CPU::getcpuid() << /*"\n" <<*/ endl;
+							*my_stream << "SIGALRM  " << CPU::getcpuid() <<  endl;
 							CPU::incrSignalCounter(SIGALRM);
 						} else {
 							*my_stream << "Ich (" << CPU::getcpuid() << ") sende an (" << CPU::getSignalCounter(SIGALRM) << ")." << endl;
@@ -51,7 +51,7 @@ void sighandler(int sig) {
 						*my_stream << "Es kam Signal: " << sig << endl; 
 						break;
 	}
-}
+}*/
 
 void hello(void) {
 	// Stream zum Ausgeben
@@ -108,7 +108,7 @@ void hello(void) {
 
 int main(int argc, char **argv) {
 	struct sigaction sa;
-	sa.sa_handler = sighandler;
+	//sa.sa_handler = sighandler;
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
 
@@ -132,17 +132,17 @@ int main(int argc, char **argv) {
 	}
 
 	// Signalhandler installieren, bei Eintritt eines der angegebenen Signale wird Signalbehandlung ausgefuehrt
-	IRQ::installHandler(SIGUSR1, sighandler);
+	/*IRQ::installHandler(SIGUSR1, sighandler);
 	IRQ::installHandler(SIGCONT, sighandler);
 	IRQ::installHandler(SIGALRM, sighandler);
 	
+*/
 
 
-/*
 	IRQ::installHandler(SIGUSR1, TIP::tip_start);
 	IRQ::installHandler(SIGCONT, TIP::tip_start);
 	IRQ::installHandler(SIGALRM, TIP::tip_start);
-*/
+
 
 	// CPUs starten
 	CPU::boot_cpus(hello, threads);

@@ -1,26 +1,34 @@
 #include "tip.h"
-/*
-Remit ** TIP::handler;
-Remit * defaultRemit;
-*/
-// Default constructor
-TIP::TIP() {
-/*	handler = new Remit *[256];
 
-	// Signalhandler with a default signalhandling-function
-	defaultRemit = new Remit(panic);
+// Default signalhandler-function: just an output
+void TIP::panic() {
+	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+	*my_stream << "CPU " << CPU::getcpuid() << ": Default signalhandler." << endl;
+}
 
-	for(int i = 0; i < NUM_OF_SIGNAL-1; i++) {
-		set_handler(defaultRemit, i);
+void TIP::sig_usr1() {
+	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+	*my_stream << "SIGUSR1  " << CPU::getcpuid() << " Level: " << CPU::getLevel(CPU::getcpuid()) << /*"\n" <<*/ endl;
+	//IRQ::sendIPI(0, SIGCONT);
+}
+
+void TIP::sig_cont() {
+	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+	*my_stream << "SIGCONT  " << CPU::getcpuid() << " Level: " << CPU::getLevel(CPU::getcpuid()) << /*"\n" <<*/ endl;
+}
+
+void TIP::sig_alrm() {
+	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+	
+	if(CPU::getcpuid() == CPU::getSignalCounter(SIGALRM)) {
+		*my_stream << "SIGALRM  " << CPU::getcpuid() << " Level: " << CPU::getLevel(CPU::getcpuid()) << /*"\n" <<*/ endl;
+		CPU::incrSignalCounter(SIGALRM);
+	} else {
+		*my_stream << "Ich (" << CPU::getcpuid() << ") sende an (" << CPU::getSignalCounter(SIGALRM) << ")." << endl;
+		IRQ::sendIPI(CPU::getSignalCounter(SIGALRM), SIGALRM);
+//		IRQ::sendIPI(0, SIGUSR1);
 	}
-*/
 }
-
-
-// Destruktor
-TIP::~TIP() {
-}
-
 
 void TIP::tip_start(int sig) {	
 	// Increment of TIP level
@@ -38,7 +46,7 @@ void TIP::tip_start(int sig) {
 	}
 
 	// Rrrremit in die Warteschlange einfuegen.
-	//CPU::getQueue()->enqueue(get_handler(sig));
+	CPU::queue[CPU::getcpuid()]->enqueue(get_handler(sig));
 	
 
 	if(CPU::getLevel(CPU::getcpuid()) == 1) { 
@@ -62,7 +70,7 @@ void TIP::tip_start(int sig) {
 
 
 
-// 
+// porpagate SLIH if there's any
 void TIP::tip_clear(sigset_t *mask) {
 	Remit *next;
 	do { 
@@ -76,7 +84,7 @@ void TIP::tip_clear(sigset_t *mask) {
 	} while (next != 0);
 }
 
+// execute SLIH
 void TIP::tip_unban(Remit *item) {
-	// SLIH
 	(item->work)();
 }

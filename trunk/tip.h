@@ -8,41 +8,48 @@
 #include "o_stream.h"
 #include "queue.h"
 #include "remit.h"
+#include <signal.h>
 
-// Trap/ Interrupt Propagation
+// Trap - Interrupt Propagation
 class TIP {
 
 public:
 	// Default constructor
-	TIP();
+	TIP() { }
 	// Destructor
-	~TIP();
+	~TIP() { }
 
 	// FLIH, signal is received and first handling is done
 	static void tip_start(int);
-//	static void tip_defer(Remit *);	// provision of SLIH
-	static void tip_unban(Remit *);	// release of deferred SLIH
-	static void tip_clear(sigset_t *);		// propagate SLIH, if any
+	
+	static void tip_clear(sigset_t *mask);		// propagate SLIH if there's any
+	
+	static void tip_unban(Remit *);				// execute SLIH
 
 	
-	/*
-	inline static void set_handler(Remit *r, int sig) {
-		handler[sig] = r;
+	// Array of pointers on signalhandler-objects, i.e. remit-objects
+	static Remit **handler;
+	
+	// Sets a signalhandler-object to the handler
+	inline static void set_handler(Remit *rem, int sig) {
+		handler[sig] = rem;
 	}
 
+	// Gets a signalhandler-object from the handler
 	inline static Remit *get_handler(int sig) {
 		return handler[sig];
 	}
-*/
-	// Default signalhandling-function: just an output
-	inline static void panic() {
-		O_Stream my_stream;
-		my_stream << "Default signalhandling function." << endl;
-	}
 
+	// Default signalhandler-function: just an output
+	static void panic();
+
+	static void sig_usr1();
+
+	static void sig_cont();
+
+	static void sig_alrm();
 private:
-	// Array of pointers on signalhandler-objects (=remit)
-	//static Remit **handler;
+	
 };
 
 #endif

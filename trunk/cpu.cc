@@ -2,8 +2,11 @@
 
 int * CPU::signalProcessOrder;
 CPU ** CPU::cpus;
-O_Stream * CPU::stream;
+O_Stream ** CPU::stream;
 Queue ** CPU::queue;
+
+Remit ** TIP::handler;
+//Remit * defaultHandler;
 
 
 bool CPU::booted = false;			// FALSE :	CPUs haven't been booted yet
@@ -51,9 +54,24 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 		signalProcessOrder[i] = 0;	
 	}
 
-	// Initialize the O_Stream for output
-	CPU::stream = new O_Stream();
+	TIP::handler = new Remit *[NUM_OF_SIGNAL];
+	
+	Remit *defaultHandler = new Remit(TIP::panic);
+	for(int i = 0; i < NUM_OF_SIGNAL; ++i) {
+		TIP::set_handler(defaultHandler, i);
+	}
 
+	Remit *usr1 = new Remit(TIP::sig_usr1);
+	TIP::set_handler(usr1, SIGUSR1);
+	Remit *cont = new Remit(TIP::sig_cont);
+	TIP::set_handler(cont, SIGCONT);
+	Remit *alrm = new Remit(TIP::sig_alrm);
+	TIP::set_handler(alrm, SIGALRM);
+
+
+
+	// Array of pointers on maxcpus Stream-Objects
+	CPU::stream = new O_Stream *[maxcpus];
 	// Array of pointers on maxcpus CPU-Objects
 	CPU::cpus = new CPU *[maxcpus]; 
 	// Array of pointers on maxcpus Queue-Objects
@@ -62,10 +80,11 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 
 	for(int i = 0; i < maxcpus; ++i) {
 	
-		cpus[i] = new CPU();			// Create every single CPU
+		cpus[i] = new CPU();				// Create every single CPU
 		cpus[i]->fn = fn;				
 		cpus[i]->id = i;
-		CPU::queue[i] = new Queue(); 	// Ccreate a queue for every single CPU
+		CPU::queue[i] = new Queue(); 		// Create a queue for every single CPU
+		CPU::stream[i] = new O_Stream();	// Create an o_stream for every single CPU
 
 		// Stackreservierung mit mmap
 		cpus[i]->stack_begin = mmap(NULL, CONFIG_STACKSIZE, PROT_EXEC | PROT_READ | PROT_WRITE, 

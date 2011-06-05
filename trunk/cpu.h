@@ -11,6 +11,8 @@
 #include "irq.h"
 #include "o_stream.h"
 #include "queue.h"
+#include "remit.h"
+#include "tip.h"
 #include <errno.h>
 #include <iostream>
 #include <sched.h>
@@ -78,12 +80,11 @@ public:
 	inline static void decrLevel(int cpuid) { 	cpus[cpuid]->level -= 1; 	}
 
 	// O_Stream for output  -  every CPU uses this Output-Stream	 
-	static O_Stream *stream;
+	static O_Stream **stream;
 
 	// Queue to store pending SLIHs	 -	every CPU got one itself
 	static Queue **queue;
-
-
+	
 private:
 	void *stack_begin;	// begin of the stack
 	void *stack_end; 	// end of the stack
