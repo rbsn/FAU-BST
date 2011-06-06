@@ -103,7 +103,7 @@ void hello(void) {
 	if(0 != syscall(SYS_tgkill, (int)getpid(), (int)getpid(), (int)SIGUSR2)) {
 		perror("syscall");
 	}
-	my_stream << "Diese Ausgabe darf _NICHT_ erscheinen! " << id << endl;
+	*my_stream << "Diese Ausgabe darf _NICHT_ erscheinen! " << id << endl;
 }
 
 

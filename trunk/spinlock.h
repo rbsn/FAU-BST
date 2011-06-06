@@ -1,16 +1,7 @@
-// $Date: 2009-11-10 09:52:05 +0100 (Tue, 10 Nov 2009) $, $Revision: 2314 $, $Author: benjamin $
-// kate: encoding ISO-8859-15;
-// vim: set fileencoding=latin-9:
-// -*- mode: c; coding: latin-9 -*- 
-
-/*! \file
- *  \brief Enthaelt die Klasse Spinlock
- */
-
 #ifndef __spinlock_include__
 #define __spinlock_include__
 
-/*! \brief Mit Hilfe eines Spinlocks kann man Codeabschnitte serialisieren die 
+/*  Mit Hilfe eines Spinlocks kann man Codeabschnitte serialisieren die 
  *  echt nebenlaeufig auf mehreren CPUs laufen. 
  *  
  *  Die Synchronisation laeuft dabei ueber eine Sperrvariable. Sobald jemand den
@@ -37,7 +28,6 @@ class Spinlock {
 	private:
 	Spinlock(const Spinlock& copy); //verhindert Kopieren
 	volatile int isLocked;
-/* Hier muesst ihr selbst Code vervollstaendigen */ 
 };
  
 #endif

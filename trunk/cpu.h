@@ -94,9 +94,14 @@ public:
 	// O_Stream for output  -  every CPU uses this Output-Stream	 
 	static O_Stream **stream;
 
+#ifdef Fliessband
 	// Queue to store pending SLIHs	 -	every CPU got one itself
 	static Queue **queue;
-	
+#else 
+	// Queue to store pending SLIHs	 -  one queue for specified CPU
+	static Queue *queue;
+#endif
+
 private:
 	void *stack_begin;	// begin of the stack
 	void *stack_end; 	// end of the stack

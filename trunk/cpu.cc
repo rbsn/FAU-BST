@@ -3,7 +3,11 @@
 int * CPU::signalProcessOrder;
 CPU ** CPU::cpus;
 O_Stream ** CPU::stream;
+#ifdef Fliessband
 Queue ** CPU::queue;
+#else 
+Queue * CPU::queue;
+#endif
 
 Remit ** TIP::handler;
 //Remit * defaultHandler;
@@ -74,16 +78,23 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 	CPU::stream = new O_Stream *[maxcpus];
 	// Array of pointers on maxcpus CPU-Objects
 	CPU::cpus = new CPU *[maxcpus]; 
+	
+#ifdef Fliessband
 	// Array of pointers on maxcpus Queue-Objects
 	CPU::queue = new Queue *[maxcpus];
-	
+#else 
+	CPU::queue = new Queue();
+#endif
 
 	for(int i = 0; i < maxcpus; ++i) {
-	
+#ifdef Fliessband
+		CPU::queue[i] = new Queue(); 		// Create a queue for every single CPU
+#endif
+
+
 		cpus[i] = new CPU();				// Create every single CPU
 		cpus[i]->fn = fn;				
 		cpus[i]->id = i;
-		CPU::queue[i] = new Queue(); 		// Create a queue for every single CPU
 		CPU::stream[i] = new O_Stream();	// Create an o_stream for every single CPU
 
 		// Stackreservierung mit mmap
