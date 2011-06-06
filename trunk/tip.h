@@ -8,6 +8,7 @@
 #include "o_stream.h"
 #include "queue.h"
 #include "remit.h"
+#include "spinlock.h"
 #include <signal.h>
 
 // Trap - Interrupt Propagation
@@ -40,6 +41,9 @@ public:
 		return handler[sig];
 	}
 
+	// Queue Spinlock
+	static Spinlock sp_queue;
+
 	// Default signalhandler-function: just an output
 	static void panic();
 
@@ -48,6 +52,8 @@ public:
 	static void sig_cont();
 
 	static void sig_alrm();
+
+	static void sig_alrm_spread(int sig);
 private:
 	
 };

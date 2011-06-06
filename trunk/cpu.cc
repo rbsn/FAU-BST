@@ -1,4 +1,4 @@
-		#include "cpu.h"
+#include "cpu.h"
 
 int * CPU::signalProcessOrder;
 CPU ** CPU::cpus;
@@ -174,6 +174,17 @@ int CPU::trampoline(void *p) {
 					return errno;
 			}
 
+#endif
+
+#ifdef Zusteller
+// SLIH CPU --> SIGHUP
+	if(cpu->id == CONFIG_TIPCPU) {
+		if(-1 == sigaddset(&cpu->mask, SIGHUP)) {
+				perror("[CPU] sigaddset");
+				return errno;
+		}
+
+	}
 #endif
 
 	IRQ::unlockIRQ(&cpu->mask);

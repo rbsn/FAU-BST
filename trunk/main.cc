@@ -142,8 +142,10 @@ int main(int argc, char **argv) {
 
 	IRQ::installHandler(SIGUSR1, TIP::tip_start);
 	IRQ::installHandler(SIGCONT, TIP::tip_start);
-	IRQ::installHandler(SIGALRM, TIP::tip_start);
-
+	IRQ::installHandler(SIGALRM, TIP::sig_alrm_spread);
+#ifdef Zusteller
+	IRQ::installHandler(SIGHUP, TIP::tip_start);
+#endif
 
 	// CPUs starten
 	CPU::boot_cpus(hello, threads);

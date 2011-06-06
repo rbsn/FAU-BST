@@ -24,8 +24,8 @@ H_SOURCES = $(shell find . -name "*.h")
 # 		LDFLAGS: 	Flags fuer den Linkeraufruf
 # 		OBJDIR: 	Verzeichnis, in dem die Objektdateien abgelegt werden
 
-TIP = Fliessband
-#TIP = Zusteller
+#TIP = Fliessband
+TIP = Zusteller
 
 CXX = g++
 CXXFLAGS = -c -Wall -g -O3 -D$(TIP)

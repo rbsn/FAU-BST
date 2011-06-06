@@ -1,5 +1,7 @@
 #include "tip.h"
 
+Spinlock TIP::sp_queue;
+
 // Default signalhandler-function: just an output
 void TIP::panic() {
 	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
@@ -21,23 +23,30 @@ void TIP::sig_cont() {
 
 }
 
-void TIP::sig_alrm() {
+void TIP::sig_alrm_spread(int sig) {
 	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
 	
 	if(CPU::getcpuid() == CPU::getSignalCounter(SIGALRM)) {
-		*my_stream << "SIGALRM  " << CPU::getcpuid() << " Level: " << CPU::getLevel(CPU::getcpuid()) << /*"\n" <<*/ endl;
+		// Correct CPU is calling first level interrupt handler
+		tip_start(sig);
 		CPU::incrSignalCounter(SIGALRM);
 	} else {
 		*my_stream << "Ich (" << CPU::getcpuid() << ") sende an (" << CPU::getSignalCounter(SIGALRM) << ")." << endl;
 		IRQ::sendIPI(CPU::getSignalCounter(SIGALRM), SIGALRM);
-//		IRQ::sendIPI(0, SIGUSR1);
 	}
+
+
+}
+
+void TIP::sig_alrm() {
+	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+	*my_stream << "SIGALRM  " << CPU::getcpuid() << endl; 
 }
 
 void TIP::tip_start(int sig) {	
-
 	// Increment of TIP level
 	int id = CPU::getcpuid();
+	O_Stream *my_stream = CPU::stream[id];
 
 	CPU::incrLevel(id);
 
@@ -52,19 +61,52 @@ void TIP::tip_start(int sig) {
 		perror("[TIP] Error @ sigdelset");		return;
 	}
 
+#ifdef Fliessband
 	// Rrrremit in die Warteschlange einfuegen.
 	CPU::queue[id]->enqueue(get_handler(sig));
-	
+#else
+	// SIGHUP doesn't need to be handled. This is the notifier for the SLIH-CPU.
+	if(sig != SIGHUP) {
+		sp_queue.lock();	
+		CPU::queue->enqueue(get_handler(sig));
+		sp_queue.unlock();
+	}
+#endif
 
+#ifdef Fliessband
 	if(CPU::getLevel(id) == 1) { 
 		while (!(CPU::queue[id]->isEmpty())) {
+#else
+	if(id == CONFIG_TIPCPU) {
+		// If SLIH-CPU was interrupted by another FLIH it must not do the SLIH stuff.
+		if(CPU::getLevel(id) == 1) {
+		sp_queue.lock();
+		while (!(CPU::queue->isEmpty())) {
+			sp_queue.unlock();
+#endif		
 			// Signale wieder freigeben mit Ausnahme des Aktiven
 			IRQ::unlockIRQ(&mask);
 			tip_clear(&mask);
 			// Signale wieder sperren (ALLE)
 			IRQ::lockIRQ(&mask);
+#ifdef Zusteller
+			sp_queue.lock();
+#endif
 		}
+#ifdef Zusteller
+			sp_queue.unlock();
+#endif
+
 	}
+
+#ifdef Zusteller
+	} else {
+//	if(CPU::getLevel(id) == 1) {
+		*my_stream << "[" << id << "] sending SIGHUP to " << CONFIG_TIPCPU << ". Sig: " << sig << endl;
+		IRQ::sendIPI(CONFIG_TIPCPU, SIGHUP);
+//	}
+	}
+#endif
 
 	// Decrement of TIP level
 	CPU::decrLevel(id);
@@ -83,11 +125,23 @@ void TIP::tip_clear(sigset_t *mask) {
 	do { 
 		// Signale wieder sperren mit Ausnahme des AKTIven
 		IRQ::lockIRQ(mask);
-		
+#ifdef Fliessband
 		if((next = (Remit *) CPU::queue[CPU::getcpuid()]->dequeue())) {
+#else
+		sp_queue.lock();
+		if((next = (Remit *) CPU::queue->dequeue())) {
+			sp_queue.unlock();
+		
+#endif
 				IRQ::unlockIRQ(mask);
 				tip_unban(next);
-		} else IRQ::unlockIRQ(mask);
+		} else {
+#ifdef Zusteller
+			sp_queue.unlock();
+#endif
+			IRQ::unlockIRQ(mask);
+		}
+
 	} while (next != 0);
 }
 
