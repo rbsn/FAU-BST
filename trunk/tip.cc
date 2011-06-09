@@ -10,13 +10,13 @@ void TIP::panic() {
 
 void TIP::sig_usr1() {
 	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-	*my_stream << "SIGUSR1  " << CPU::getcpuid() << " Level: " << CPU::getLevel(CPU::getcpuid()) << /*"\n" <<*/ endl;
+	*my_stream << "SIGUSR1  " << CPU::getcpuid() <<  endl;
 	//IRQ::sendIPI(0, SIGCONT);
 }
 
 void TIP::sig_cont() {
 	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-	*my_stream << "SIGCONT  " << CPU::getcpuid() << " Level: " << CPU::getLevel(CPU::getcpuid()) << /*"\n" <<*/ endl;
+	*my_stream << "SIGCONT  " << CPU::getcpuid() << endl;
 
 	for(volatile int i = 0; i < 10000; ++i) {
 	}
@@ -48,18 +48,16 @@ void TIP::tip_start(int sig) {
 	int id = CPU::getcpuid();
 	O_Stream *my_stream = CPU::stream[id];
 
-	CPU::incrLevel(id);
-
+	//CPU::incrLevel(id);
 	//signale freigeben
 	// Registersicherung NICHT  notwendig
 	//TODO: SYNCHR
-	
 
 	sigset_t mask = *CPU::getMask(id);
 	// Durch Sperren des aktiven Signals wird dieses nicht erneut eingelocht
-	if(sigdelset(&mask, sig) == -1) {
-		perror("[TIP] Error @ sigdelset");		return;
-	}
+//	if(sigdelset(&mask, sig) == -1) {
+//		perror("[TIP] Error @ sigdelset");		return;
+//	}
 
 #ifdef Fliessband
 	// Rrrremit in die Warteschlange einfuegen.
@@ -74,8 +72,10 @@ void TIP::tip_start(int sig) {
 #endif
 
 #ifdef Fliessband
-	if(CPU::getLevel(id) == 1) { 
+	if(CPU::getFlag_SLIH(id) == false) { 
+		CPU::flipFlag_SLIH(id);
 		while (!(CPU::queue[id]->isEmpty())) {
+
 #else
 	if(id == CONFIG_TIPCPU) {
 		// If SLIH-CPU was interrupted by another FLIH it must not do the SLIH stuff.
@@ -97,7 +97,7 @@ void TIP::tip_start(int sig) {
 			sp_queue.unlock();
 #endif
 
-	}
+		}
 
 #ifdef Zusteller
 	} else {
@@ -109,8 +109,8 @@ void TIP::tip_start(int sig) {
 #endif
 
 	// Decrement of TIP level
-	CPU::decrLevel(id);
-
+	//CPU::decrLevel(id);
+	CPU::flipFlag_SLIH(id);
 
 	// TODO
 	// ??? Evtl. Signale wieder sperren ???

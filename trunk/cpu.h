@@ -91,12 +91,18 @@ public:
 	// Decrements the TIP level of a CPU
 	inline static void decrLevel(int cpuid) { 	cpus[cpuid]->level -= 1; 	}
 
+
+
 	// O_Stream for output  -  every CPU uses this Output-Stream	 
 	static O_Stream **stream;
 
 #ifdef Fliessband
 	// Queue to store pending SLIHs	 -	every CPU got one itself
 	static Queue **queue;
+	
+	inline static bool getFlag_SLIH(int cpuid) {	return cpus[cpuid]->flag_SLIH;	}
+
+	inline static void flipFlag_SLIH(int cpuid) {	cpus[cpuid]->flag_SLIH = not(cpus[cpuid]->flag_SLIH);
 #else 
 	// Queue to store pending SLIHs	 -  one queue for specified CPU
 	static Queue *queue;
@@ -126,6 +132,11 @@ private:
 	//	* level=1 : only one critical section active
 	// 	* level=n : another critical sections active
 	int level;
+#ifdef Fliessband
+	bool flag_SLIH;
+#else
+	static bool flag_SLIH;
+#endif
 };
 
 #endif

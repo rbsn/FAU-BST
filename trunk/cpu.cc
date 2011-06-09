@@ -7,6 +7,7 @@ O_Stream ** CPU::stream;
 Queue ** CPU::queue;
 #else 
 Queue * CPU::queue;
+bool CPU::flag_SLIH = false;
 #endif
 
 Remit ** TIP::handler;
@@ -154,7 +155,7 @@ int CPU::trampoline(void *p) {
 
 #if (OPTION == 2 || OPTION == 4 || OPTION == 5)
 	// Laeuft nur auf CPU 1
-	if(cpu->id == 5) {
+	if(cpu->id == 3) {
 			#if (OPTION == 2)
 			if(-1 == sigaddset(&cpu->mask, SIGUSR1)) {
 					perror("[CPU] sigaddset");
