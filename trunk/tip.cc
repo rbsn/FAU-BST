@@ -79,7 +79,8 @@ void TIP::tip_start(int sig) {
 #else
 	if(id == CONFIG_TIPCPU) {
 		// If SLIH-CPU was interrupted by another FLIH it must not do the SLIH stuff.
-		if(CPU::getLevel(id) == 1) {
+		if(CPU::flag_SLIH == false) {
+		CPU::flag_SLIH = true;
 		sp_queue.lock();
 		while (!(CPU::queue->isEmpty())) {
 			sp_queue.unlock();
@@ -110,7 +111,11 @@ void TIP::tip_start(int sig) {
 
 	// Decrement of TIP level
 	//CPU::decrLevel(id);
+#ifdef Fliessband
 	CPU::flipFlag_SLIH(id);
+#else
+	CPU::flag_SLIH = false;
+#endif
 
 	// TODO
 	// ??? Evtl. Signale wieder sperren ???

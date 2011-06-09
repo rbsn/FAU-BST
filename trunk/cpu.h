@@ -102,10 +102,12 @@ public:
 	
 	inline static bool getFlag_SLIH(int cpuid) {	return cpus[cpuid]->flag_SLIH;	}
 
-	inline static void flipFlag_SLIH(int cpuid) {	cpus[cpuid]->flag_SLIH = not(cpus[cpuid]->flag_SLIH);
+	inline static void flipFlag_SLIH(int cpuid) {	cpus[cpuid]->flag_SLIH = not(cpus[cpuid]->flag_SLIH); }
 #else 
 	// Queue to store pending SLIHs	 -  one queue for specified CPU
 	static Queue *queue;
+
+	static bool flag_SLIH;
 #endif
 
 private:
@@ -134,8 +136,6 @@ private:
 	int level;
 #ifdef Fliessband
 	bool flag_SLIH;
-#else
-	static bool flag_SLIH;
 #endif
 };
 
