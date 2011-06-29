@@ -95,7 +95,7 @@ public:
 
 	// O_Stream for output  -  every CPU uses this Output-Stream	 
 	static O_Stream **stream;
-
+/*
 #ifdef Fliessband
 	// Queue to store pending SLIHs	 -	every CPU got one itself
 	static Queue **queue;
@@ -109,7 +109,7 @@ public:
 
 	static bool flag_SLIH;
 #endif
-
+*/
 private:
 	void *stack_begin;	// begin of the stack
 	void *stack_end; 	// end of the stack
@@ -125,6 +125,8 @@ private:
 	static bool booted; 
 	static CPU **cpus;
 
+	static void queue_init(int);
+	static void signal_choice(CPU *);
 	static int trampoline(void *);
 
 	// Array for #(SIGNALs), the result of the index represents the CPU that has to handle that signal
@@ -134,9 +136,9 @@ private:
 	//	* level=1 : only one critical section active
 	// 	* level=n : another critical sections active
 	int level;
-#ifdef Fliessband
-	bool flag_SLIH;
-#endif
+//#ifdef Fliessband
+//	bool flag_SLIH;
+//#endif
 };
 
 #endif

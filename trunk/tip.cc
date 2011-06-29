@@ -23,20 +23,7 @@ void TIP::sig_cont() {
 
 }
 
-void TIP::sig_alrm_spread(int sig) {
-	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-	
-	if(CPU::getcpuid() == CPU::getSignalCounter(SIGALRM)) {
-		// Correct CPU is calling first level interrupt handler
-		tip_start(sig);
-		CPU::incrSignalCounter(SIGALRM);
-	} else {
-		*my_stream << "Ich (" << CPU::getcpuid() << ") sende an (" << CPU::getSignalCounter(SIGALRM) << ")." << endl;
-		IRQ::sendIPI(CPU::getSignalCounter(SIGALRM), SIGALRM);
-	}
 
-
-}
 
 void TIP::sig_alrm() {
 	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
@@ -45,7 +32,7 @@ void TIP::sig_alrm() {
 
 void TIP::tip_start(int sig) {	
 	// Increment of TIP level
-	int id = CPU::getcpuid();
+/*	int id = CPU::getcpuid();
 	O_Stream *my_stream = CPU::stream[id];
 
 	//CPU::incrLevel(id);
@@ -116,7 +103,7 @@ void TIP::tip_start(int sig) {
 #else
 	CPU::flag_SLIH = false;
 #endif
-
+*/
 	// TODO
 	// ??? Evtl. Signale wieder sperren ???
 
@@ -126,7 +113,7 @@ void TIP::tip_start(int sig) {
 
 // porpagate SLIH if there's any
 void TIP::tip_clear(sigset_t *mask) {
-	Remit *next;
+/*	Remit *next;
 	do { 
 		// Signale wieder sperren mit Ausnahme des AKTIven
 		IRQ::lockIRQ(mask);
@@ -147,7 +134,7 @@ void TIP::tip_clear(sigset_t *mask) {
 			IRQ::unlockIRQ(mask);
 		}
 
-	} while (next != 0);
+	} while (next != 0);*/
 }
 
 // execute SLIH

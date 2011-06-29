@@ -1,0 +1,8 @@
+#include "signal_all.ah"
+
+// WO es passiert
+
+aspect SignalCONT_Aspect : public Signal_All {
+
+	pointcut choice() = "void CPU::signal_choice(...)";
+};

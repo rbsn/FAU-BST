@@ -1,0 +1,68 @@
+// WAS passiert!
+#include "fliessband_slice.ah"
+#include "../../tip.h";
+#include "../../cpu.h";
+
+aspect FliessbandA {
+		//	selects the signal distribution 
+		//pointcut virtual handler() = 0;
+		pointcut fliessband() = "void TIP::tip_start(...)";
+		pointcut clear() = "void TIP::tip_clear(...)";
+		pointcut queue() = "void CPU::queue_init(...)";
+	
+
+		advice "CPU" : slice Fliessband_Slice;
+
+		advice execution(fliessband()) : after() {
+
+			int id = CPU::getcpuid();
+	
+			O_Stream *my_stream = CPU::stream[id];
+
+			sigset_t *mask = CPU::getMask(id);
+
+				int sig = *tjp->arg<0>();	// Param 0 ; Signal
+
+				CPU::queue[id]->enqueue(TIP::get_handler(sig));
+				if(CPU::getFlag_SLIH(id) == false) { 
+						CPU::flipFlag_SLIH(id);
+						while (!(CPU::queue[id]->isEmpty())) {
+								// Signale wieder freigeben mit Ausnahme des Aktiven
+								IRQ::unlockIRQ(mask);
+								TIP::tip_clear(mask);
+								// Signale wieder sperren (ALLE)
+								IRQ::lockIRQ(mask);
+						}
+				}
+
+				CPU::flipFlag_SLIH(id);
+		}
+	
+		advice execution(clear()) : after() {
+			sigset_t *mask = *tjp->arg<0>();
+
+			Remit *next;
+			
+			do { 
+				// Signale wieder sperren mit Ausnahme des AKTIven
+				IRQ::lockIRQ(mask);
+				if((next = (Remit *) CPU::queue[CPU::getcpuid()]->dequeue())) {
+
+					IRQ::unlockIRQ(mask);
+					TIP::tip_unban(next);
+				} else {
+					IRQ::unlockIRQ(mask);
+				}
+
+			} while (next != 0);
+		}
+
+		advice execution(queue()) : after() {
+			// Array of pointers on maxcpus Queue-Objects
+			int maxcpus = *tjp->arg<0>();
+			CPU::queue = new Queue *[maxcpus];
+			for(int i = 0; i < maxcpus; i++) {
+				CPU::queue[i] = new Queue(); 		// Create a queue for every single CPU
+			}
+		}
+};

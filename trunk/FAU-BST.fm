@@ -1,0 +1,69 @@
+menu "Signal"
+
+	menu "Signalzustellung"
+	
+		menuconfig SIGALRM
+			bool "SIGALRM"
+			default y
+			
+			choice
+				prompt "Zustellung des Signals SIGALRM"
+				depends on SIGALRM
+
+				config SIGALRM_Defined_CPU
+					bool "SIGALRM_Defined_CPU"
+				config SIGALRM_Every_CPU
+					bool "SIGALRM_Every_CPU"
+				config SIGALRM_Round_Robin_Algorithm
+					bool "SIGALRM_Round_Robin_Algorithm"
+			endchoice
+
+		menuconfig SIGCONT
+			bool "SIGCONT"
+			default y
+			
+			choice
+				prompt "Zustellung des Signals SIGCONT"
+				depends on SIGCONT
+		
+				config SIGCONT_Defined_CPU
+					bool "SIGCONT_Defined_CPU"
+				config SIGCONT_Every_CPU
+					bool "SIGCONT_Every_CPU"
+				config SIGCONT_Round_Robin_Algorithm
+					bool "SIGCONT_Round_Robin_Algorithm"	
+			endchoice
+		
+		menuconfig SIGUSR1
+			bool "SIGUSR1"
+			default y
+			
+			choice
+				prompt "Zustellung des Signals SIGUSR1"
+				depends on SIGUSR1
+
+				config SIGUSR1_Defined_CPU
+					bool "SIGUSR1_Defined_CPU"
+				config SIGUSR1_Every_CPU
+					bool "SIGUSR1_Every_CPU"
+				config SIGUSR1_Round_Robin_Algorithm
+					bool "SIGUSR1_Round_Robin_Algorithm"		
+			endchoice
+	endmenu
+
+	menu "Signalverarbeitung"
+
+		choice
+			prompt "Verarbeitung der Signale"
+	
+			config asymetric_procedure
+				bool "Zustellerbetrieb"
+			comment "Abarbeitung des SLIH nicht zwingend durch die CPU, die den FLIH bearbeitet hat"
+				depends on asymetric_procedure
+			config symetric_procedure
+				bool "Fliessbandbetrieb"
+			comment "Abarbeitung des SLIH durch die CPU, die den FLIH bearbeitet hat"
+				depends on symetric_procedure
+		endchoice
+	endmenu
+endmenu

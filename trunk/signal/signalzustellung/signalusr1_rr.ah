@@ -1,0 +1,8 @@
+#include "signal_rr.ah"
+
+// WO es passiert
+
+aspect SignalUSR1_Aspect : public Signal_RR {
+
+	pointcut handler() = "void SignalUSR1::handle(...)";
+};

@@ -1,0 +1,8 @@
+#include "signal_spec.ah"
+
+// WO es passiert
+
+aspect SignalUSR1_Aspect : public Signal_Spec {
+
+	pointcut choice() = "void CPU::signal_choice(...)";
+};

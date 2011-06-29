@@ -2,6 +2,15 @@
 #include "cpu.h"
 #include "irq.h"
 #include "o_stream.h"
+#ifdef CONFIG_SIGALRM
+#include "signal/signalzustellung/signalalrm.h"
+#endif
+#ifdef CONFIG_SIGCONT
+#include "signal/signalzustellung/signalcont.h"
+#endif
+#ifdef CONFIG_SIGUSR1
+#include "signal/signalzustellung/signalusr1.h"
+#endif
 #include "timer.h"
 #include "tip.h"
 #include <errno.h>
@@ -50,6 +59,7 @@ void sighandler(int sig) {
 						// obigen duerfen nicht durchkommen!
 						*my_stream << "Es kam Signal: " << sig << endl; 
 						break;
+
 	}*/
 }
 
@@ -91,11 +101,11 @@ void hello(void) {
 		}
 		*/
 		for(volatile int j = 0; j < 500000000; j++);
-		//if(id == 1) {
+		if(id == 4) {
 		kill(getpid(), SIGCONT);
-		//} 
-		if(id == 2) {
-		kill(getpid(), SIGUSR1);
+		} 
+		if(id == 3) {
+			kill(getpid(), SIGUSR1);
 		}
 	
 	}
@@ -140,12 +150,19 @@ int main(int argc, char **argv) {
 */
 
 
-	IRQ::installHandler(SIGUSR1, TIP::tip_start);
-	IRQ::installHandler(SIGCONT, TIP::tip_start);
-	IRQ::installHandler(SIGALRM, TIP::sig_alrm_spread);
-#ifdef Zusteller
-	IRQ::installHandler(SIGHUP, TIP::tip_start);
+#ifdef CONFIG_SIGALRM
+	IRQ::installHandler(SIGALRM, SignalALRM::handle);
 #endif
+#ifdef CONFIG_SIGCONT
+	IRQ::installHandler(SIGCONT, SignalCONT::handle);
+#endif
+#ifdef CONFIG_SIGUSR1
+	IRQ::installHandler(SIGUSR1, SignalUSR1::handle);
+#endif
+
+//#ifdef Zusteller
+	IRQ::installHandler(SIGHUP, TIP::tip_start);
+//#endif
 
 	// CPUs starten
 	CPU::boot_cpus(hello, threads);

@@ -1,4 +1,4 @@
-.PHONY: all clean tar
+.PHONY: all clean tar xconfig transform
 
   # -------------------------------------------------------------------------- ##
  #                                                                            # #
@@ -24,19 +24,15 @@ H_SOURCES = $(shell find . -name "*.h")
 # 		LDFLAGS: 	Flags fuer den Linkeraufruf
 # 		OBJDIR: 	Verzeichnis, in dem die Objektdateien abgelegt werden
 
-#TIP = Fliessband
-TIP = Zusteller
-
-CXX = g++
-CXXFLAGS = -c -Wall -g -O3 -D$(TIP)
-
+CXX = /proj/i4bst/bin/ag++
+CXXFLAGS = -c --keep_woven -Wall -g -O3 -include "../include/autoconf.h" 
 LD = 
 LDFLAGS =
 
 OBJDIR = ./build
 
 ARCHIV = FAU-BST.tar.gz
-
+VPATH = $(sort $(dir $(CC_SOURCES)))
 
 # ---------------------------------------------------------------------------
 
@@ -66,9 +62,32 @@ clean:
 	rm -rf $(OBJDIR) 
 	rm -rf $(TARGET)
 	rm -rf $(ARCHIV)
+	rm -rf outdir
+	rm -rf include
+	rm -rf .config
 
 # ---------------------------------------------------------------------------
 # Tar erzeugt ein Archiv
 
 tar:
 	tar -vcf $(ARCHIV) $(CC_SOURCES) $(H_SOURCES)
+
+
+# ---------------------------------------------------------------------------
+# Mconf erzeugt startet Kconfig
+
+xconfig: FAU-BST.fm
+	#/proj/i4bst/tools/bst-config/mconf FAU-BST.fm
+	/proj/i4bst/tools/bst-config/qconf FAU-BST.fm
+	mkdir -p include
+	/proj/i4bst/tools/bst-config/conf -s FAU-BST.fm
+	
+
+
+
+# ---------------------------------------------------------------------------
+
+transform: xconfig FAU-BST.cmp
+	mkdir -p outdir
+	perl /proj/i4bst/tools/bst-config/transform.pl -f .config -m FAU-BST.cmp -o outdir -i .
+	cp Makefile outdir/Makefile

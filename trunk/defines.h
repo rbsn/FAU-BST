@@ -6,7 +6,7 @@
 #define NUM_OF_SIGNAL 		256
 
 #ifndef CONFIG_TIPCPU
-#define CONFIG_TIPCPU		2
+#define CONFIG_TIPCPU		0
 #endif
 
 #ifndef Zusteller

@@ -3,13 +3,14 @@
 int * CPU::signalProcessOrder;
 CPU ** CPU::cpus;
 O_Stream ** CPU::stream;
+/*
 #ifdef Fliessband
 Queue ** CPU::queue;
 #else 
 Queue * CPU::queue;
 bool CPU::flag_SLIH = false;
 #endif
-
+*/
 Remit ** TIP::handler;
 //Remit * defaultHandler;
 
@@ -79,18 +80,10 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 	CPU::stream = new O_Stream *[maxcpus];
 	// Array of pointers on maxcpus CPU-Objects
 	CPU::cpus = new CPU *[maxcpus]; 
-	
-#ifdef Fliessband
-	// Array of pointers on maxcpus Queue-Objects
-	CPU::queue = new Queue *[maxcpus];
-#else 
-	CPU::queue = new Queue();
-#endif
+
+	CPU::queue_init(maxcpus);
 
 	for(int i = 0; i < maxcpus; ++i) {
-#ifdef Fliessband
-		CPU::queue[i] = new Queue(); 		// Create a queue for every single CPU
-#endif
 
 
 		cpus[i] = new CPU();				// Create every single CPU
@@ -140,53 +133,9 @@ int CPU::trampoline(void *p) {
 	
 	sigemptyset(&cpu->mask);
 
-#if (OPTION == 1 || OPTION == 4 || OPTION == 5)
-	if(-1 == sigaddset(&cpu->mask, SIGUSR1)) {
-		perror("[CPU] sigaddset");
-		return errno;
-	}
-	#if( OPTION == 1)
-	if(-1 == sigaddset(&cpu->mask, SIGCONT)) {
-		perror("[CPU] sigaddset");
-		return errno;
-	}
-	#endif
-#endif
+	// Signalverteilungen werden festgelegt
+	CPU::signal_choice(cpu);	
 
-#if (OPTION == 2 || OPTION == 4 || OPTION == 5)
-	// Laeuft nur auf CPU 1
-	if(cpu->id == 3) {
-			#if (OPTION == 2)
-			if(-1 == sigaddset(&cpu->mask, SIGUSR1)) {
-					perror("[CPU] sigaddset");
-					return errno;
-			}
-			#endif
-			if(-1 == sigaddset(&cpu->mask, SIGCONT)) {
-					perror("[CPU] sigaddset");
-					return errno;
-			}
-	}
-#endif
-
-#if (OPTION == 3 || OPTION == 5)
-			if(-1 == sigaddset(&cpu->mask, SIGALRM)) {
-					perror("[CPU] sigaddset");
-					return errno;
-			}
-
-#endif
-
-#ifdef Zusteller
-// SLIH CPU --> SIGHUP
-	if(cpu->id == CONFIG_TIPCPU) {
-		if(-1 == sigaddset(&cpu->mask, SIGHUP)) {
-				perror("[CPU] sigaddset");
-				return errno;
-		}
-
-	}
-#endif
 
 	IRQ::unlockIRQ(&cpu->mask);
 
@@ -200,6 +149,16 @@ int CPU::trampoline(void *p) {
 	// TODO: Return-Value?
 	return 0;
 }
+
+void CPU::signal_choice(CPU *cpu) {
+
+}
+
+void CPU::queue_init(int maxcpus) {
+
+}
+
+
 
 int CPU::getcpuid() {
 	// Put an arbitrary variable on the stack and readout the stackpointer
