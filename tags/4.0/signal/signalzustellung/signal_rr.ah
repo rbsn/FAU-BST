@@ -1,0 +1,50 @@
+#ifndef __SIGNAL_RR_AH__
+#define __SIGNAL_RR_AH__
+
+#include "../../cpu.h"
+#include "../../irq.h"
+
+#include <iostream>
+
+// WAS passiert!
+
+aspect Signal_RR {
+	//	selects the signal distribution 
+	pointcut virtual handler() = 0;
+	
+	pointcut virtual choice() = 0;
+	
+	advice execution(handler()) : around() {
+		
+		int sig = *tjp->arg<0>();	// Param 0 ; Signal
+
+		if(CPU::getcpuid() == CPU::getSignalCounter(sig)) {
+			// Correct CPU is calling first level interrupt handler
+			tjp->proceed();
+
+			CPU::incrSignalCounter(sig);
+		} else {
+			IRQ::sendIPI(CPU::getSignalCounter(sig), sig);
+		}
+
+	}
+	
+	advice execution(choice()) : after() {
+	
+		CPU *cpu = *tjp->arg<0>();
+
+		// Round-Robin starts at CPU 0
+
+		#ifdef CONFIG_SIGALRM_Round_Robin_Algorithm
+				sigaddset(&cpu->mask, SIGALRM);
+		#endif
+		#ifdef CONFIG_SIGCONT_Round_Robin_Algorithm
+				sigaddset(&cpu->mask, SIGCONT);
+		#endif
+		#ifdef CONFIG_SIGUSR1_Round_Robin_Algorithm
+				sigaddset(&cpu->mask, SIGUSR1);
+		#endif
+	}
+};
+
+#endif

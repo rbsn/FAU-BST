@@ -1,0 +1,129 @@
+$COMPONENT={
+	name=>"FAU-BST_model",
+	vname=>"FAU-BST model (complexe example)",
+	dir=>"./",
+	files=>["chain.h", "cpu.cc", "cpu.h", "defines.h", "irq.cc", "irq.h", "main.cc", "o_stream.cc", "o_stream.h", "queue.cc", "queue.h", "remit.h", "spinlock.cc", "spinlock.h", "timer.cc", "timer.h", "tip.cc", "tip.h"],
+
+	comp=>[
+		{
+			name=>"Signalzustellung",
+			vname=>"Signalzustellung der Signalbehandlung",
+			subdir=>"signal/signalzustellung",
+			files=>["signal_all.ah", "signal_rr.ah", "signal_spec.ah"],
+			
+			comp=>[
+				{
+					name=>"SIGALRM",
+					vname=>"Zustellung von SIGALRM",
+					depends=>"&SIGALRM",
+					files=>["signalalrm.cc", "signalalrm.h"],
+
+					comp=>[
+						{
+							name=>"SIGALRM_Defined_CPU",
+							vname=>"SIGALRM on a defined CPU",
+							depends=>"&SIGALRM_Defined_CPU",
+							file=>"signalalrm_spec.ah",
+						},
+
+						{
+							name=>"SIGALRM_Every_CPU",
+							vname=>"SIGALRM on every CPU",
+							depends=>"&SIGALRM_Every_CPU",
+							file=>"signalalrm_all.ah",
+						},
+
+						{
+							name=>"SIGALRM_Round_Robin_Algorithm",
+							vname=>"SIGALRM on every CPU in Round Robin",
+							depends=>"&SIGALRM_Round_Robin_Algorithm",
+							file=>"signalalrm_rr.ah",
+						}
+					]
+				},
+
+				{
+					name=>"SIGCONT",
+					vname=>"Zustellung von SIGCONT",
+					depends=>"&SIGCONT",
+					files=>["signalcont.cc", "signalcont.h"],
+
+					comp=>[
+						{
+							name=>"SIGCONT_Defined_CPU",
+							vname=>"SIGCONT on a defined CPU",
+							depends=>"&SIGCONT_Defined_CPU",
+							file=>"signalcont_spec.ah",
+						},
+
+						{
+							name=>"SIGCONT_Every_CPU",
+							vname=>"SIGCONT on every CPU",
+							depends=>"&SIGCONT_Every_CPU",
+							file=>"signalcont_all.ah",
+						},
+
+						{
+							name=>"SIGCONT_Round_Robin_Algorithm",
+							vname=>"SIGCONT on every CPU in Round Robin",
+							depends=>"&SIGCONT_Round_Robin_Algorithm",
+							file=>"signalcont_rr.ah",
+						}
+					]
+				},
+				
+				{
+					name=>"SIGUSR1",
+					vname=>"Zustellung von SIGUSR1",
+					depends=>"&SIGUSR1",
+					files=>["signalusr1.cc", "signalusr1.h"],
+
+					comp=>[
+						{
+							name=>"SIGUSR1_Defined_CPU",
+							vname=>"SIGUSR1 on a defined CPU",
+							depends=>"&SIGUSR1_Defined_CPU",
+							file=>"signalusr1_spec.ah",
+						},
+
+						{
+							name=>"SIGUSR1_Every_CPU",
+							vname=>"SIGUSR1 on every CPU",
+							depends=>"&SIGUSR1_Every_CPU",
+							file=>"signalusr1_all.ah",
+						},
+
+						{
+							name=>"SIGUSR1_Round_Robin_Algorithm",
+							vname=>"SIGUSR1 on every CPU in Round Robin",
+							depends=>"&SIGUSR1_Round_Robin_Algorithm",
+							file=>"signalusr1_rr.ah",
+						}
+					]
+				}
+			]
+		},
+
+		{
+			name=>"Signalverarbeitung",
+			vname=>"Signalverarbeitung",
+			subdir=>"signal/signalverarbeitung",
+			
+			comp=>[
+				{
+					name=>"asymetric_procedure",
+					vname=>"Asymetric procedure = Zustellerbetrieb",
+					depends=>"&asymetric_procedure",
+					files=>["zusteller.ah", "zusteller_slice.ah"],
+				},
+
+				{
+					name=>"symetric_procedure",
+					vname=>"Symetric procedure = Fliessbandverarbeitung",
+					depends=>"&symetric_procedure",
+					files=>["fliessband.ah", "fliessband_slice.ah"],
+				}
+			]
+		}
+	]
+};
