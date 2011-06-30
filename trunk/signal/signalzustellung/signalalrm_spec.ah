@@ -1,3 +1,6 @@
+#ifndef __SIGNALALRM_SPEC_AH__
+#define __SIGNALALRM_SPEC_AH__
+
 #include "signal_spec.ah"
 
 // WO es passiert
@@ -6,3 +9,5 @@ aspect SignalALRM_Aspect : public Signal_Spec {
 
 	pointcut choice() = "void CPU::signal_choice(...)";
 };
+
+#endif

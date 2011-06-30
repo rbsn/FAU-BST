@@ -1,3 +1,6 @@
+#ifndef __ZUSTELLER_AH__
+#define __ZUSTELLER_AH__
+
 // WAS passiert!
 #include "zusteller_slice.ah"
 #include "../../defines.h"
@@ -100,3 +103,5 @@ aspect Zusteller {
 		CPU::queue = new Queue();
 	}
 };
+
+#endif

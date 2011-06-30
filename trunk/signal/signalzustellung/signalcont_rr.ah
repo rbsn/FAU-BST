@@ -1,3 +1,6 @@
+#ifndef __SIGNALCONT_RR_AH__
+#define __SIGNALCONT_RR_AH__
+
 #include "signal_rr.ah"
 
 // WO es passiert
@@ -6,3 +9,5 @@ aspect SignalCONT_Aspect : public Signal_RR {
 
 	pointcut handler() = "void SignalCONT::handle(...)";
 };
+
+#endif
