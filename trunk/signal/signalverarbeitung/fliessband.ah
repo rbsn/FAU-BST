@@ -1,9 +1,12 @@
+#ifndef __FLIESSBAND_AH__
+#define __FLIESSBAND_AH__
+
 // WAS passiert!
 #include "fliessband_slice.ah"
 #include "../../tip.h";
 #include "../../cpu.h";
 
-aspect FliessbandA {
+aspect Fliessband {
 		//	selects the signal distribution 
 		//pointcut virtual handler() = 0;
 		pointcut fliessband() = "void TIP::tip_start(...)";
@@ -66,3 +69,5 @@ aspect FliessbandA {
 			}
 		}
 };
+
+#endif

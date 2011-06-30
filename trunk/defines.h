@@ -9,10 +9,4 @@
 #define CONFIG_TIPCPU		0
 #endif
 
-#ifndef Zusteller
-#ifndef Fliessband
-#define Fliessband
-#endif
-#endif
-
 #endif

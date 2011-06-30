@@ -101,7 +101,7 @@ void hello(void) {
 		}
 		*/
 		for(volatile int j = 0; j < 500000000; j++);
-		if(id == 4) {
+		if(id == 2) {
 		kill(getpid(), SIGCONT);
 		} 
 		if(id == 3) {
