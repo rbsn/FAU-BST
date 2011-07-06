@@ -2,7 +2,7 @@ $COMPONENT={
 	name=>"FAU-BST_model",
 	vname=>"FAU-BST model (complexe example)",
 	dir=>"./",
-	files=>["chain.h", "cpu.cc", "cpu.h", "defines.h", "irq.cc", "irq.h", "main.cc", "o_stream.cc", "o_stream.h", "queue.cc", "queue.h", "remit.h", "spinlock.cc", "spinlock.h", "timer.cc", "timer.h", "tip.cc", "tip.h", "gotoxy.h", "thread/coroutine.cc", "thread/coroutine.h", "thread/dispatch.cc", "thread/dispatch.h", "thread/appl.h", "thread/appl.cc", "thread/toc.h", "thread/toc.cc", "thread/toc.inc", "thread/toc.asm", "thread/kickoff.cc"],
+	files=>["chain.h", "cpu.cc", "cpu.h", "defines.h", "irq.cc", "irq.h", "main.cc", "o_stream.cc", "o_stream.h", "queue.cc", "queue.h", "remit.h", "spinlock.cc", "spinlock.h", "timer.cc", "timer.h", "tip.cc", "tip.h", "color.h", "gotoxy.h", "thread/coroutine.cc", "thread/coroutine.h", "thread/dispatch.cc", "thread/dispatch.h", "thread/appl.h", "thread/appl.cc", "thread/toc.h", "thread/toc.cc", "thread/toc.inc", "thread/toc.asm", "thread/kickoff.cc"],
 
 	comp=>[
 		{

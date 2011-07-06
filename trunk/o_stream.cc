@@ -135,9 +135,26 @@ O_Stream & O_Stream::operator<< ( O_Stream &(*f)(O_Stream &) ) {
 	return (*f) (*this);
 }
 
-// Set cursor position to (x, y)
+// Aufruf eines clear-Konstruktors, um den Screen zu loeschen und den Cursor auf (0,0) zu setzen
+//O_Stream & O_Stream::operator<< ( clear cl) {
+//	return *this<< "\033[" "m";
+//}
+
+// Aufruf einer colour-Konstruktors, um Farbattribute zu setzen
+O_Stream & O_Stream::operator<< ( color co) {
+	return *this<< "\033[" << co.attribute << ";" << co.foreground << ";" << co.background << "m";
+}
+
+// Aufruf eines gotoxy-Konstruktors, um die Cursorposition auf (x,y) zu setzen
 O_Stream & O_Stream::operator<< ( gotoxy g) {
 	return *this<< "\033[" << g.x << ";" << g.y << "H";
+}
+
+// Cleart den Screen 
+O_Stream & clear (O_Stream &os) {
+	
+	os << "\033[0;" << color::FG_WHITE << ";" << color::FG_BLACK << "m";
+	os << "\033[2J";	return os;
 }
 
 // Fuegt einen Zeilenumbruch in die Ausgabe ein

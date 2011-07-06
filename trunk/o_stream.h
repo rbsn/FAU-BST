@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string>
 #include "gotoxy.h"
+#include "color.h"
 
 using namespace std;
 
@@ -39,11 +40,19 @@ public:
 	// Aufruf einer Manipulatorfunktion
 	O_Stream & operator<< (O_Stream &(*f)(O_Stream &));
 
+	// Aufruf eines clear-Konstruktors, um den Screen zu loeschen und den Cursor auf (0,0) zu setzen
+	//O_stream & operator<< (clear cl);
+	// Aufruf einer colour-Konstruktors, um Farbattribute zu setzen
+	O_Stream & operator<< (color co);
+	// Aufruf eines gotoxy-Konstruktors, um die Cursorposition auf (x,y) zu setzen
 	O_Stream & operator<< (gotoxy g); 
+	
 	// Basis des zur Anzeige verwendeten Zahlensystems (z.B. 2, 8, 10, 16)
 	int base;
 };
 
+// Cleart den Screen
+O_Stream& clear (O_Stream &os);
 // Fuegt einen Zeilenumbruch in die Ausgabe ein
 O_Stream& endl (O_Stream &os);
 // Waehlt das binaere Zahlensystem aus

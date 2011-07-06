@@ -64,6 +64,10 @@ void hello(void) {
 	int id = CPU::getcpuid();	// CPU-ID
 //	if(id == 0) std::cerr << " MAIN" << hex << apps[4] << std::endl;
 
+	// FIXME: Bevor die Applikationen losrennen, wird der Screen gecleart;
+
+	*my_stream << clear;
+
 	dispatcher.go(*apps[id]);	
 
 	while(1) {

@@ -74,7 +74,7 @@ clean:
 	rm -rf $(ARCHIV)
 	rm -rf outdir
 	rm -rf include
-	rm -rf .config
+#	rm -rf .config
 
 # ---------------------------------------------------------------------------
 # Tar erzeugt ein Archiv
