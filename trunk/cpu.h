@@ -53,7 +53,6 @@ public:
 	*/	
 	}
 
-
 	inline static sigset_t *getMask(int cpuid) {
 		return &(cpus[cpuid]->mask);
 	}

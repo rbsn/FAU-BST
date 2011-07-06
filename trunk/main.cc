@@ -21,11 +21,34 @@
 #include <unistd.h>
 
 #include "gotoxy.h"
+#include "thread/appl.h"
+#include "thread/dispatch.h"
 
 // For Random!
 #include <stdlib.h>
 #include <time.h>
 
+static unsigned char app1stack[CONFIG_APPSTACKSIZE];
+static unsigned char app2stack[CONFIG_APPSTACKSIZE];
+static unsigned char app3stack[CONFIG_APPSTACKSIZE];
+static unsigned char app4stack[CONFIG_APPSTACKSIZE];
+static unsigned char app5stack[CONFIG_APPSTACKSIZE];
+static unsigned char app6stack[CONFIG_APPSTACKSIZE];
+static unsigned char app7stack[CONFIG_APPSTACKSIZE];
+static unsigned char app8stack[CONFIG_APPSTACKSIZE];
+
+Application app1(&app1stack[CONFIG_APPSTACKSIZE]);
+Application app2(&app2stack[CONFIG_APPSTACKSIZE]);
+Application app3(&app3stack[CONFIG_APPSTACKSIZE]);
+Application app4(&app4stack[CONFIG_APPSTACKSIZE]);
+Application app5(&app5stack[CONFIG_APPSTACKSIZE]);
+Application app6(&app6stack[CONFIG_APPSTACKSIZE]);
+Application app7(&app7stack[CONFIG_APPSTACKSIZE]);
+Application app8(&app8stack[CONFIG_APPSTACKSIZE]);
+
+Application *apps[8];
+
+Dispatcher dispatcher;
 
 using namespace std;
 
@@ -37,41 +60,13 @@ void sighandler(int sig) {
 void hello(void) {
 	// Stream zum Ausgeben
 	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-//	Gotoxy *my_stream = new Gotoxy();
 	
 	int id = CPU::getcpuid();	// CPU-ID
-	/*
-	int pid = getpid();			// PID
-	int tid = CPU::getTID(id);	// TID
-	
-	my_stream << "ID: " << id << ", PID: " << pid << ", TID: " << tid << endl;
-	*/
+//	if(id == 0) std::cerr << " MAIN" << hex << apps[4] << std::endl;
 
-	// For random output
-	int number;
-  	srand ( time(NULL) );		// initialize random seed
- 	// number = rand();			// generate random number
-	number = 31;
+	dispatcher.go(*apps[id]);	
 
-	// Output
-	//for(int i = 0 ; i < 1; i++) {
 	while(1) {
-	/*
-		*my_stream << gotoxy(100,100) << "Hello " << id << endl;
-		*my_stream << "Dezimal " << dec << number << endl;
-		*my_stream << "Binaer " << bin << number << endl;
-		*my_stream << "Octal " << oct << number << endl;
-		*my_stream << "Hexadezimal " << hex << number << endl;
-		//number = rand();		// generate a new random number
-		
-		if(id > 5) {
-				//my_stream << "signals rule the world  " << id << endl;
-				if(0 != syscall(SYS_tgkill, (int)getpid(), (int)getpid(), (int)SIGCONT)) {
-						perror("syscall");
-				}
-
-		}
-		*/
 		for(volatile int j = 0; j < 500000000; j++);
 		if(id == 2) {
 		kill(getpid(), SIGCONT);
@@ -97,8 +92,8 @@ int main(int argc, char **argv) {
 
 	sigaction(SIGUSR2, &sa, NULL);
 
-	//int threads = sysconf(_SC_NPROCESSORS_ONLN);
-	int threads = 16;
+//	int threads = sysconf(_SC_NPROCESSORS_ONLN);
+	int threads = 4;
 
 	sigset_t mask;
 	sigfillset(&mask);
@@ -120,6 +115,14 @@ int main(int argc, char **argv) {
 	IRQ::installHandler(SIGALRM, sighandler);
 	
 */
+	apps[0] = &app1;
+	apps[1] = &app2;
+	apps[2] = &app3;
+	apps[3] = &app4;
+	apps[4] = &app5;
+	apps[5] = &app6;
+	apps[6] = &app7;
+	apps[7] = &app8;
 
 
 #ifdef CONFIG_SIGALRM

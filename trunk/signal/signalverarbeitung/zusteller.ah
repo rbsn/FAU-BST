@@ -24,7 +24,7 @@ aspect Zusteller {
 	
 		int id = CPU::getcpuid();
 	
-		O_Stream *my_stream = CPU::stream[id];
+//		O_Stream *my_stream = CPU::stream[id];
 		
 		sigset_t *mask = CPU::getMask(id);
 
@@ -61,7 +61,7 @@ aspect Zusteller {
 
 			} else {
 					//	if(CPU::getLevel(id) == 1) {
-					*my_stream << "[" << id << "] sending SIGHUP to " << CONFIG_TIPCPU << ". Sig: " << sig << endl;
+				//	*my_stream << "[" << id << "] sending SIGHUP to " << CONFIG_TIPCPU << ". Sig: " << sig << endl;
 					IRQ::sendIPI(CONFIG_TIPCPU, SIGHUP);
 					//	}
 			}

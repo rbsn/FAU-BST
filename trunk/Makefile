@@ -11,6 +11,7 @@
 # ---------------------------------------------------------------------------
 # Liste der Quelltexte:
 
+ASM_SOURCES = $(shell find . -name "*.asm")
 CC_SOURCES = $(shell find . -name "*.cc")
 H_SOURCES = $(shell find . -name "*.h")
 
@@ -28,17 +29,21 @@ CXX = /proj/i4bst/bin/ag++
 CXXFLAGS = -c --keep_woven -Wall -g -O3 -include "../include/autoconf.h" 
 LD = 
 LDFLAGS =
+ASM = nasm
+ASMOBJFORMAT = elf
 
 OBJDIR = ./build
 
 ARCHIV = FAU-BST.tar.gz
-VPATH = $(sort $(dir $(CC_SOURCES)))
+VPATH = $(sort $(dir $(STARTUP_SOURCE) $(CC_SOURCES)$(ASM_SOURCES)))
 
 # ---------------------------------------------------------------------------
 
 
 CC_OBJECTS=$(notdir $(CC_SOURCES:.cc=.o))
-OBJPRE		= $(addprefix $(OBJDIR)/,$(CC_OBJECTS))
+ASM_OBJECTS = $(patsubst %.asm,_%.o, $(notdir $(ASM_SOURCES)))         
+OBJPRE = $(addprefix $(OBJDIR)/,$(ASM_OBJECTS) $(CC_OBJECTS))
+
 
 TARGET=a.out
 
@@ -49,6 +54,11 @@ $(OBJDIR)/%.o: %.cc
 	@if test \( ! \( -d $(@D) \) \) ;then mkdir -p $(@D);fi
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 #	mv *.o $(OBJDIR)
+$(OBJDIR)/_%.o : %.asm                                                                                                                                                                                                                   
+	@echo "ASM      $@"
+	@if test \( ! \( -d $(@D) \) \) ;then mkdir -p $(@D);fi
+	$(ASM) -f $(ASMOBJFORMAT) -o $@ $<
+
 
 $(TARGET): $(OBJPRE)
 	$(CXX) $(LDFLAGS) -o $@ $(OBJPRE)

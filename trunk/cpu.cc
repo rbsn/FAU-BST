@@ -54,6 +54,7 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 		maxcpus = cpus_online;
 	}
 
+
 	// Initialize the array for #(SIGNALs), first CPU that will handle an incoming signal will be CPU_0
 	CPU::signalProcessOrder = new int[NUM_OF_SIGNAL];
 	for(int i = 0; i < NUM_OF_SIGNAL; ++i) {

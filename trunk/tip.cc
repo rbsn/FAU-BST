@@ -4,30 +4,30 @@ Spinlock TIP::sp_queue;
 
 // Default signalhandler-function: just an output
 void TIP::panic() {
-	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-	*my_stream << "CPU " << CPU::getcpuid() << ": Default signalhandler." << endl;
+//	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+//	*my_stream << "CPU " << CPU::getcpuid() << ": Default signalhandler." << endl;
 }
 
 void TIP::sig_usr1() {
-	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-	*my_stream << "SIGUSR1  " << CPU::getcpuid() <<  endl;
+//	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+//	*my_stream << "SIGUSR1  " << CPU::getcpuid() <<  endl;
 	//IRQ::sendIPI(0, SIGCONT);
 }
 
 void TIP::sig_cont() {
-	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-	*my_stream << "SIGCONT  " << CPU::getcpuid() << endl;
+//	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+//	*my_stream << "SIGCONT  " << CPU::getcpuid() << endl;
 
-	for(volatile int i = 0; i < 10000; ++i) {
-	}
+//	for(volatile int i = 0; i < 10000; ++i) {
+//	}
 
 }
 
 
 
 void TIP::sig_alrm() {
-	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-	*my_stream << "SIGALRM  " << CPU::getcpuid() << endl; 
+//	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+//	*my_stream << "SIGALRM  " << CPU::getcpuid() << endl; 
 }
 
 void TIP::tip_start(int sig) {	

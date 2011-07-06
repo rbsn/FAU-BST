@@ -9,4 +9,5 @@
 #define CONFIG_TIPCPU		0
 #endif
 
+#define CONFIG_APPSTACKSIZE 	128 * 1024 
 #endif
