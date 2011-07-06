@@ -91,3 +91,8 @@ transform: xconfig FAU-BST.cmp
 	mkdir -p outdir
 	perl /proj/i4bst/tools/bst-config/transform.pl -f .config -m FAU-BST.cmp -o outdir -i .
 	cp Makefile outdir/Makefile
+
+dbg: FAU-BST.cmp
+	mkdir -p outdir
+	perl /proj/i4bst/tools/bst-config/transform.pl -f .config -m FAU-BST.cmp -o outdir -i .
+	cp Makefile outdir/Makefile

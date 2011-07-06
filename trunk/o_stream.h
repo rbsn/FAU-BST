@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <string>
+#include "gotoxy.h"
 
 using namespace std;
 
@@ -38,6 +39,7 @@ public:
 	// Aufruf einer Manipulatorfunktion
 	O_Stream & operator<< (O_Stream &(*f)(O_Stream &));
 
+	O_Stream & operator<< (gotoxy g); 
 	// Basis des zur Anzeige verwendeten Zahlensystems (z.B. 2, 8, 10, 16)
 	int base;
 };

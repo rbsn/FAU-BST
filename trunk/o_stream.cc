@@ -4,6 +4,9 @@
 O_Stream::O_Stream() {
 	base = 10;				// Default: Dezimalbasis
 	buf = new string("");
+
+//	string s1 = "\033[5;33;40m";
+//	write(STDOUT_FILENO, s1.c_str(), s1.length());
 }
 
 // Destruktor
@@ -135,6 +138,22 @@ O_Stream & O_Stream::operator<< ( O_Stream &(*f)(O_Stream &) ) {
 	return (*f) (*this);
 }
 
+O_Stream & O_Stream::operator<< ( gotoxy g) {
+	return *this<< "\033[" << g.x << ";" << g.y << "H";
+}
+
+// Go To X and Y
+/*
+O_Stream & gotoxy(int x, int y, O_Stream &os) {
+	string s1 = "\033[";
+	s1 += x;
+	s1 += ";";
+	s1 += y;
+	s1 += "H";
+	os<<(s1.c_str());
+	return os;
+}
+*/
 // Fuegt einen Zeilenumbruch in die Ausgabe ein
 O_Stream & endl (O_Stream &os) {
 	os << '\n';			return os;
