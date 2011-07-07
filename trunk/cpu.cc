@@ -1,37 +1,16 @@
 #include "cpu.h"
+#include "gotoxy.h"
 
 int * CPU::signalProcessOrder;
 CPU ** CPU::cpus;
 O_Stream ** CPU::stream;
-/*
-#ifdef Fliessband
-Queue ** CPU::queue;
-#else 
-Queue * CPU::queue;
-bool CPU::flag_SLIH = false;
-#endif
-*/
 Remit ** TIP::handler;
-//Remit * defaultHandler;
-
 
 bool CPU::booted = false;			// FALSE :	CPUs haven't been booted yet
 
 unsigned int CPU::num_of_cpus = 0;	// 0: 	Still no CPUs has been created
 
-// DEFINES
-#ifndef OPTION
-#define OPTION 5
-/* Description of the different options:
-	1:	SIGCONT and SIGUSR1 are activated for every CPU, so these signals will be treated by every CPU
-	2:	SIGCONT and SIGUSR1 are activated only for one predefined CPU, so these signals will be treated by only this CPU
-	3:	SIGALRM is activated only for one CPU, so this signal will be treated in Round-Robin procedure
-	4:	SIGUSR1 will be treated like option 1, SIGCONT will be treated like option 2
-	5:	SIGUSR1 will be treated like option 1, SIGCONT will be treated like option 2, SIGALRM will be treated like option 3;
-
-*/
-#endif
-
+extern Scheduler scheduler;
 
 using namespace std;
 
@@ -91,6 +70,11 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 		cpus[i]->fn = fn;				
 		cpus[i]->id = i;
 		CPU::stream[i] = new O_Stream();	// Create an o_stream for every single CPU
+
+		*CPU::stream[i] << "TEST:  " << i << endl;
+			
+		cpus[i]->q = new Queue();	//Create ReadyList for Scheduler
+		scheduler.setCPUQueue(i, cpus[i]->q);	//Tell Scheduler about Queue
 
 		// Stackreservierung mit mmap
 		cpus[i]->stack_begin = mmap(NULL, CONFIG_STACKSIZE, PROT_EXEC | PROT_READ | PROT_WRITE, 

@@ -3,11 +3,14 @@
 
 // WAS passiert!
 #include "fliessband_slice.ah"
-#include "../../tip.h";
-#include "../../cpu.h";
+#include "../../tip.h"
+#include "../../cpu.h"
+#include "../../color.h"
+#include "../../gotoxy.h"
+#include <sched.h>
 
 aspect Fliessband {
-		//	selects the signal distribution 
+//	selects the signal distribution 
 		//pointcut virtual handler() = 0;
 		pointcut fliessband() = "void TIP::tip_start(...)";
 		pointcut clear() = "void TIP::tip_clear(...)";
@@ -18,13 +21,15 @@ aspect Fliessband {
 
 		advice execution(fliessband()) : after() {
 
-			int id = CPU::getcpuid();
+			int id = sched_getcpu();
 	
-			O_Stream *my_stream = CPU::stream[id];
+		//	O_Stream *my_stream = CPU::stream[id];
+		//	O_Stream *my_stream = new O_Stream();
 
 			sigset_t *mask = CPU::getMask(id);
 
 				int sig = *tjp->arg<0>();	// Param 0 ; Signal
+		//	*my_stream << gotoxy(10,10) << color(color::FG_WHITE, color::BG_BLACK) << "Signale" << sig << endl;
 
 				CPU::queue[id]->enqueue(TIP::get_handler(sig));
 				if(CPU::getFlag_SLIH(id) == false) { 

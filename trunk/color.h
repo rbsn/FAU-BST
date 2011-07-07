@@ -1,5 +1,5 @@
-#ifndef __COLOUR_H_
-#define __COLOUR_H_
+#ifndef __COLOR_H_
+#define __COLOR_H_
 
 //INCLUDES
 

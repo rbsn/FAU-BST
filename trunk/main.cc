@@ -22,7 +22,7 @@
 
 #include "gotoxy.h"
 #include "thread/appl.h"
-#include "thread/dispatch.h"
+#include "thread/scheduler.h"
 
 // For Random!
 #include <stdlib.h>
@@ -36,6 +36,10 @@ static unsigned char app5stack[CONFIG_APPSTACKSIZE];
 static unsigned char app6stack[CONFIG_APPSTACKSIZE];
 static unsigned char app7stack[CONFIG_APPSTACKSIZE];
 static unsigned char app8stack[CONFIG_APPSTACKSIZE];
+static unsigned char idle1stack[CONFIG_APPSTACKSIZE];
+static unsigned char idle2stack[CONFIG_APPSTACKSIZE];
+static unsigned char idle3stack[CONFIG_APPSTACKSIZE];
+static unsigned char idle4stack[CONFIG_APPSTACKSIZE];
 
 Application app1(&app1stack[CONFIG_APPSTACKSIZE]);
 Application app2(&app2stack[CONFIG_APPSTACKSIZE]);
@@ -46,9 +50,15 @@ Application app6(&app6stack[CONFIG_APPSTACKSIZE]);
 Application app7(&app7stack[CONFIG_APPSTACKSIZE]);
 Application app8(&app8stack[CONFIG_APPSTACKSIZE]);
 
-Application *apps[8];
+IdleApp idleapp1(&idle1stack[CONFIG_APPSTACKSIZE]);
+IdleApp idleapp2(&idle2stack[CONFIG_APPSTACKSIZE]);
+IdleApp idleapp3(&idle3stack[CONFIG_APPSTACKSIZE]);
+IdleApp idleapp4(&idle4stack[CONFIG_APPSTACKSIZE]);
 
-Dispatcher dispatcher;
+Application *apps[8];
+IdleApp	*idleapps[4];
+
+Scheduler scheduler;
 
 using namespace std;
 
@@ -60,15 +70,21 @@ void sighandler(int sig) {
 void hello(void) {
 	// Stream zum Ausgeben
 	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
+	//*my_stream << clear;
 	
 	int id = CPU::getcpuid();	// CPU-ID
 //	if(id == 0) std::cerr << " MAIN" << hex << apps[4] << std::endl;
 
 	// FIXME: Bevor die Applikationen losrennen, wird der Screen gecleart;
 
-	*my_stream << clear;
+	
+	for(int i = 0; i < 2; i++) {
+		scheduler.ready(*apps[id + i*4], id);
+	}
 
-	dispatcher.go(*apps[id]);	
+	//for(volatile int i = 0; i < 400000000; i++) { }
+//	dispatcher.go(*apps[id]);	
+	scheduler.schedule();
 
 	while(1) {
 		for(volatile int j = 0; j < 500000000; j++);
@@ -128,6 +144,11 @@ int main(int argc, char **argv) {
 	apps[6] = &app7;
 	apps[7] = &app8;
 
+	idleapps[0] = &idleapp1;
+	idleapps[1] = &idleapp2;
+	idleapps[2] = &idleapp3;
+	idleapps[3] = &idleapp4;
+
 
 #ifdef CONFIG_SIGALRM
 	IRQ::installHandler(SIGALRM, SignalALRM::handle);
@@ -145,6 +166,11 @@ int main(int argc, char **argv) {
 
 	// CPUs starten
 	CPU::boot_cpus(hello, threads);
+	std::cerr << "boot cpus" << std::endl;
+
+	//for(volatile int i = 0; i < 400000000; i++) {}
+	for(volatile int i = 0; i < 400000000; i++) {}
+	for(volatile int i = 0; i < 400000000; i++) {}
 	
 	Timer alarm;
 	

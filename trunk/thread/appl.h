@@ -3,20 +3,17 @@
 
 // INCLUDES
 #include "../cpu.h"
-#include "../color.h"		// Zum Setzen von Farb- und Attributeigenschaften
-#include "../gotoxy.h"		// Zum Setzen der Cursorposition
-#include "coroutine.h"
-#include "dispatch.h"
+#include "entrant.h"
 
 
-class Application : public Coroutine {
+class Application : public Entrant {
 
 private:
     Application(const Application &copy); // Verhindere Kopieren
 
 public:
 	// Konstruktor
-	Application(void *tos) : Coroutine(tos) { }
+	Application(void *tos) : Entrant(tos) { }
 
     //Enthaelt den Code der Anwendung
     void action();

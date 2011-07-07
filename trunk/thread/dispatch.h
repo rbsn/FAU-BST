@@ -2,7 +2,6 @@
 #define __dispatch_include__
 
 #include "coroutine.h"
-#include "../cpu.h"
 
 class Dispatcher {
 

@@ -12,6 +12,7 @@
 #include "o_stream.h"
 #include "queue.h"
 #include "remit.h"
+#include "thread/scheduler.h"
 #include "tip.h"
 #include <errno.h>
 #include <iostream>
@@ -65,6 +66,8 @@ public:
 	int id;				// cpu-ID
 	
 	void (*fn)(void);
+
+	Queue *q;
 	
 	// Gets the CPU that has to handle the commited signal
 	inline static int getSignalCounter(int signal) {
