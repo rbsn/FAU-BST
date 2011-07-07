@@ -17,7 +17,7 @@ void Application::action () {
 	int count = 0;
 //	O_Stream my_stream;
 	while(1) {	
-		*my_stream << /*gotoxy(cid * 2, 100) << color(color::FG_BLACK + cid, color::BG_WHITE - cid, color::OFF) <<*/ "Hi " << cid << " on CPU " << cpu << ": "<<count++ << endl;
+		*my_stream << /*gotoxy(cid * 2, 100) << */color(color::FG_BLACK + cid, color::BG_WHITE - cid, color::OFF) << "Hi " << cid << " on CPU " << cpu << ": "<<count++ << endl;
 //		std::cerr << "HI " << cpu << std::endl;
 		//kill(getpid(), SIGCONT);
 		for(volatile int i = 0; i < 90000000; i++) {

@@ -35,7 +35,7 @@ void TIP::sig_alrm() {
   	//O_Stream *my_stream = CPU::stream[sched_getcpu()];
 
 	mystream << "SIGALRM" << endl;
-//	scheduler.resume();
+	scheduler.resume();
 }
 
 void TIP::tip_start(int sig) {	

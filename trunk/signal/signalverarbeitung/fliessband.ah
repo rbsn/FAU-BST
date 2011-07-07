@@ -54,7 +54,8 @@ aspect Fliessband {
 			do { 
 				// Signale wieder sperren mit Ausnahme des AKTIven
 				IRQ::lockIRQ(mask);
-				if((next = (Remit *) CPU::queue[CPU::getcpuid()]->dequeue())) {
+				//if((next = (Remit *) CPU::queue[CPU::getcpuid()]->dequeue())) {
+				if((next = (Remit *) CPU::queue[sched_getcpu()]->dequeue())) {
 
 					IRQ::unlockIRQ(mask);
 					TIP::tip_unban(next);
