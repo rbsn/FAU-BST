@@ -18,7 +18,6 @@ class Queue {
 
 private:
     Queue(const Queue &copy); // Verhindere Kopieren
-	volatile int counter;
 
 protected:
     Chain* head;
@@ -26,7 +25,7 @@ protected:
 
 public:
     // Der Konstruktor initialisiert die Liste als leere Liste
-    Queue () { head = 0; tail = &head; counter=0; }
+    Queue () { head = 0; tail = &head; }
 
     // Das Listenelement item wird an das Ende der Liste angefuegt.
     void enqueue (Chain* item);
