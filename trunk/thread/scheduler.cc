@@ -115,7 +115,7 @@ void Scheduler::resume(Entrant *self) {
 	//int cpuid = self->cpu;
 	int cpuid = sched_getcpu();
 	O_Stream mystream;
-//	mystream << "resume" << endl;
+	mystream << "CPUID: scherduler" << cpuid << endl;
 
 	Entrant *tmp = (Entrant *)readylist[cpuid]->dequeue();
 

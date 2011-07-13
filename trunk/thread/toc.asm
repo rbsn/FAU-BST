@@ -21,11 +21,15 @@
 toc_go:
 	;Kickoffadr neuer Stackpointer
 	mov eax, [esp+4]			;toc struct adr nach eax
-	mov ebx, [eax+ebx_offset]
-	mov esi, [eax+esi_offset]
-	mov edi, [eax+edi_offset]
-	mov ebp, [eax+ebp_offset]
+	;mov ebx, [eax+ebx_offset]
+	;mov esi, [eax+esi_offset]
+	;mov edi, [eax+edi_offset]
+	;mov ebp, [eax+ebp_offset]
 	mov esp, [eax+esp_offset]
+	pop ebp
+	pop edi
+	pop esi
+	pop ebx
 	ret
 
 ; TOC_SWITCH : Prozessumschaltung. Der aktuelle Registersatz wird     
@@ -41,16 +45,26 @@ toc_switch:
 	mov eax, [esp+8]			;then struct
 	
 	;Ruecksichern
-	mov [ecx+ebx_offset], ebx
-	mov [ecx+esi_offset], esi
-	mov [ecx+edi_offset], edi
-	mov [ecx+ebp_offset], ebp
+	;mov [ecx+ebx_offset], ebx
+	;mov [ecx+esi_offset], esi
+	;mov [ecx+edi_offset], edi
+	;mov [ecx+ebp_offset], ebp
+	;pusha
+	push ebx 
+	push esi
+	push edi
+	push ebp
 	mov [ecx+esp_offset], esp
 
 	;neu schreiben
-	mov ebx, [eax+ebx_offset]
-	mov esi, [eax+esi_offset]
-	mov edi, [eax+edi_offset]
-	mov ebp, [eax+ebp_offset]
+	;mov ebx, [eax+ebx_offset]
+	;mov esi, [eax+esi_offset]
+	;mov edi, [eax+edi_offset]
+	;mov ebp, [eax+ebp_offset]
 	mov esp, [eax+esp_offset]
+	pop ebp
+	pop edi
+	pop esi
+	pop ebx
+	;popa
 	ret

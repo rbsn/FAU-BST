@@ -169,7 +169,7 @@ int main(int argc, char **argv) {
 //	std::cerr << "boot cpus" << std::endl;
 
 	//for(volatile int i = 0; i < 400000000; i++) {}
-//	for(volatile int i = 0; i < 100000000; i++) {}
+	for(volatile int i = 0; i < 100000000; i++) {}
 //	for(volatile int i = 0; i < 400000000; i++) {}
 	
 	Timer alarm;

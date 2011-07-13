@@ -8,6 +8,11 @@ void toc_settle (struct toc* regs, void* tos, void (*kickoff)(Coroutine*), Corou
 	*(--adr) = (int)object;
 	*(--adr) = 0;
 	*(--adr) = (int)kickoff;	
+	*(--adr) = 0; // ebx
+	*(--adr) = 0; // esi
+	*(--adr) = 0; // edi
+	*(--adr) = 0; // ebp
+
 	
 	regs->esp = adr; //angepasster StackPointer
 }

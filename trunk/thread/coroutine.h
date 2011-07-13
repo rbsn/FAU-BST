@@ -15,7 +15,9 @@ public:
 
 	// Konstruktor
 	Coroutine(void *tos);
-	
+
+	// Stackpointer auf Stackanfang der Koroutine
+	void *stackaddr_begin;
 
 	int cid;
 	// Aktiviert die erste Korouting auf einem Prozessor
@@ -33,6 +35,9 @@ public:
 	bool dying();
 
 	int cpu;
+	
+	// Gets the CPU-ID of active running thread, -1 on error
+	static int getCPUofActive();
 
 };
 	// Funktion zum Starten einer Koroutine

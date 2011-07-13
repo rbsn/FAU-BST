@@ -3,6 +3,7 @@
 
 int * CPU::signalProcessOrder;
 CPU ** CPU::cpus;
+void ** CPU::activeThread;
 O_Stream ** CPU::stream;
 Remit ** TIP::handler;
 
@@ -60,6 +61,8 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 	CPU::stream = new O_Stream *[maxcpus];
 	// Array of pointers on maxcpus CPU-Objects
 	CPU::cpus = new CPU *[maxcpus]; 
+	// Array of pointers on maxcpus Active Thread-Objects
+	CPU::activeThread = new void *[maxcpus];
 
 	CPU::queue_init(maxcpus);
 

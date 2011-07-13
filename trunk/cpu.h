@@ -13,6 +13,7 @@
 #include "queue.h"
 #include "remit.h"
 #include "thread/scheduler.h"
+//#include "thread/coroutine.h"
 #include "tip.h"
 #include <errno.h>
 #include <iostream>
@@ -94,6 +95,7 @@ public:
 	inline static void decrLevel(int cpuid) { 	cpus[cpuid]->level -= 1; 	}
 
 
+	static void **activeThread;
 
 	// O_Stream for output  -  every CPU uses this Output-Stream	 
 	static O_Stream **stream;
