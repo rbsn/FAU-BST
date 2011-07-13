@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
 	sigaction(SIGUSR2, &sa, NULL);
 
 //	int threads = sysconf(_SC_NPROCESSORS_ONLN);
-	int threads = 2;
+	int threads = 4;
 
 	sigset_t mask;
 	sigfillset(&mask);
