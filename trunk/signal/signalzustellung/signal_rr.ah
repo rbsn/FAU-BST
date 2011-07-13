@@ -18,11 +18,12 @@ aspect Signal_RR {
 		
 		int sig = *tjp->arg<0>();	// Param 0 ; Signal
 
-		if(CPU::getcpuid() == CPU::getSignalCounter(sig)) {
+		if(sched_getcpu() == CPU::getSignalCounter(sig)) {
+//			std::cerr << "handler " << sched_getcpu() << std::endl;
+			CPU::incrSignalCounter(sig);
 			// Correct CPU is calling first level interrupt handler
 			tjp->proceed();
 
-			CPU::incrSignalCounter(sig);
 		} else {
 			IRQ::sendIPI(CPU::getSignalCounter(sig), sig);
 		}

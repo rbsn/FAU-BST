@@ -31,10 +31,10 @@ void TIP::sig_cont() {
 // Signalhandler-function for SIGALRM
 void TIP::sig_alrm() {
 
-	O_Stream mystream;
-  	//O_Stream *my_stream = CPU::stream[sched_getcpu()];
+	//O_Stream mystream;
+//  	O_Stream *my_stream = CPU::stream[sched_getcpu()];
 
-	mystream << "SIGALRM" << endl;
+//	*my_stream << "SIGALRM" << endl;
 	scheduler.resume();
 }
 

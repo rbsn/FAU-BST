@@ -17,8 +17,8 @@ Scheduler::Scheduler() {
 
 // Readylist-Queue an CPU binden (dies findet in cpu.cc statt)
 void Scheduler::setCPUQueue(int cpuid, Queue *q) {
-	O_Stream mystream;
-	mystream << "Queue an CPU gebunden." << endl;
+//	O_Stream mystream;
+//	mystream << "Queue an CPU gebunden." << endl;
 	
 	//std::cout << "Queue an CPU gebunden." << std::endl;
 	readylist[cpuid] = q;
@@ -28,8 +28,8 @@ void Scheduler::setCPUQueue(int cpuid, Queue *q) {
 void Scheduler::ready(Entrant &that, int cpuid) {
 //	DBG << "Putting " << that.cid << " in readylist" << endl;
 //	that.reset_kill_flag();
-	O_Stream mystream;
-	mystream << "Putting in readylist " << endl;
+//	O_Stream mystream;
+	//mystream << "Putting in readylist " << endl;
 	readylist[cpuid]->enqueue(&that);
 //	int bits = 0;
 //	for (unsigned int i=0; i < CPU::getNumberOfBootedCPUs(); i++) {
@@ -48,8 +48,8 @@ void Scheduler::ready(Entrant &that, int cpuid) {
 void Scheduler::schedule() {
 	//int cpuid = CPU::getcpuid();
 	int cpuid = sched_getcpu();		// SCHEINT ZU STIMMEN
-	O_Stream mystream;
-	mystream << "CPU: " << cpuid << endl;
+//	O_Stream mystream;
+//	mystream << "CPU: " << cpuid << endl;
 	Entrant *tmp = (Entrant *)readylist[cpuid]->dequeue();
 	
 	//Falls noch keine Koroutinen verfuegbar -> idle
@@ -114,11 +114,14 @@ void Scheduler::resume() {
 void Scheduler::resume(Entrant *self) {
 	//int cpuid = self->cpu;
 	int cpuid = sched_getcpu();
+	O_Stream mystream;
+//	mystream << "resume" << endl;
 
 	Entrant *tmp = (Entrant *)readylist[cpuid]->dequeue();
 
 	// keine ausfuehrbare Coroutine mehr vorhanden
 	if(tmp == 0) {
+	//	mystream << "no resume" << endl;
 //		DBG << "[scheduler] no app in ready-list" << endl;
 		// Aktive Coroutine darf weiterlaufen
 //		if(!aktiv->dying()) return;
@@ -129,6 +132,7 @@ void Scheduler::resume(Entrant *self) {
 			return;
 //		}
 	} else {
+	//	mystream << "resume" << endl;
 		//	DBG << "[" << active()->cid << "] New Entrant: " << tmp->cid << endl;
 		//	if(tmp->dying()) {
 		//		tmp->reset_kill_flag(); 	//tmp nicht neu einfuegen in readylist. Damit ist tmp gestorben

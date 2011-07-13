@@ -10,10 +10,10 @@ Timer::Timer() {
 	struct timeval current;
 	inital.tv_sec = 0;
 	current.tv_sec = 0;
-	//inital.tv_usec = 100000;	// 100000 Mikrosekunden = 100 Millisekunden
-	//current.tv_usec = 100000;	// 100 Millisekunden >)(D
-	inital.tv_usec = 500000;
-	current.tv_usec = 500000;
+//	inital.tv_usec = 100000;	// 100000 Mikrosekunden = 100 Millisekunden
+//	current.tv_usec = 100000;	// 100 Millisekunden >)(D
+	inital.tv_usec = 200000;	// 500 Millisekunden 
+	current.tv_usec = 200000;	//   ---- ' ' ----
 	time.it_value = current;
 	time.it_interval = inital; 
 	
@@ -21,7 +21,7 @@ Timer::Timer() {
 		perror("[Timer] error @ setitimer");
 	}
 
-	std::cerr << "TIMER" << std::endl;
+//	std::cerr << "TIMER" << std::endl;
 }
 
 // Destruktor

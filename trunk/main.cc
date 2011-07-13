@@ -166,11 +166,11 @@ int main(int argc, char **argv) {
 
 	// CPUs starten
 	CPU::boot_cpus(hello, threads);
-	std::cerr << "boot cpus" << std::endl;
+//	std::cerr << "boot cpus" << std::endl;
 
 	//for(volatile int i = 0; i < 400000000; i++) {}
-	for(volatile int i = 0; i < 400000000; i++) {}
-	for(volatile int i = 0; i < 400000000; i++) {}
+//	for(volatile int i = 0; i < 100000000; i++) {}
+//	for(volatile int i = 0; i < 400000000; i++) {}
 	
 	Timer alarm;
 	

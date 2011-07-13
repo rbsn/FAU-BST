@@ -71,7 +71,7 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 		cpus[i]->id = i;
 		CPU::stream[i] = new O_Stream();	// Create an o_stream for every single CPU
 
-		*CPU::stream[i] << "TEST:  " << i << endl;
+//		*CPU::stream[i] << "TEST:  " << i << endl;
 			
 		cpus[i]->q = new Queue();	//Create ReadyList for Scheduler
 		scheduler.setCPUQueue(i, cpus[i]->q);	//Tell Scheduler about Queue

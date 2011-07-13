@@ -27,8 +27,8 @@ void Application::action () {
 //		if(count == 120 && cid == 4) scheduler.exit(this);
 //		if(count % 50 != 0) continue;
 //		if(cid == 0) std::cerr << hex << apps[4] << std::endl;
-		if(cid < 4) scheduler.resume(this);
-		else scheduler.resume(this);
+	//	if(cid < 4) scheduler.resume(this);
+	//	else scheduler.resume(this);
 		
 	}
 	

@@ -13,8 +13,8 @@ Dispatcher::Dispatcher() {
 Coroutine * Dispatcher::active() {
 	//int cpuid = CPU::getcpuid();
 	int cpuid = sched_getcpu();
-	O_Stream my_stream;
-	my_stream <</* gotoxy(0,0) <<*/ "cpuid: " << cpuid << endl;
+//	O_Stream my_stream;
+//	my_stream <</* gotoxy(0,0) <<*/ "cpuid: " << cpuid << endl;
 	return life[cpuid];	// TODO
 }
 

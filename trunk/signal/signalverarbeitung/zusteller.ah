@@ -22,13 +22,14 @@ aspect Zusteller {
 
 	advice execution(zusteller()) : after() {
 	
-		int id = CPU::getcpuid();
+	//	int id = CPU::getcpuid();
+		int id = sched_getcpu();
+		int sig = *tjp->arg<0>();	// Param 0 ; Signal
 	
-//		O_Stream *my_stream = CPU::stream[id];
+		O_Stream *my_stream = CPU::stream[id];
 		
 		sigset_t *mask = CPU::getMask(id);
 
-			int sig = *tjp->arg<0>();	// Param 0 ; Signal
 
 			if(sig != SIGHUP) {
 					TIP::sp_queue.lock();	
@@ -61,7 +62,7 @@ aspect Zusteller {
 
 			} else {
 					//	if(CPU::getLevel(id) == 1) {
-				//	*my_stream << "[" << id << "] sending SIGHUP to " << CONFIG_TIPCPU << ". Sig: " << sig << endl;
+//					*my_stream << "[" << id << "] sending SIGHUP to " << CONFIG_TIPCPU << ". Sig: " << sig << endl;
 					IRQ::sendIPI(CONFIG_TIPCPU, SIGHUP);
 					//	}
 			}
