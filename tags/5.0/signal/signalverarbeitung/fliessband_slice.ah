@@ -1,0 +1,24 @@
+#ifndef __FLIESSBAND_SLICE_AH__
+#define __FLIESSBAND_SLICE_AH__
+
+
+slice class Fliessband_Slice {
+	bool flag_SLIH;
+
+public:
+	// Queue to store pending SLIHs	 -	every CPU got one itself
+	static Queue **queue;
+	
+	inline static bool getFlag_SLIH(int cpuid) {	
+		return cpus[cpuid]->flag_SLIH;	
+	}
+
+	inline static void flipFlag_SLIH(int cpuid) {	
+		cpus[cpuid]->flag_SLIH = not(cpus[cpuid]->flag_SLIH); 
+	}
+
+};
+
+slice Queue **Fliessband_Slice::queue; 
+
+#endif

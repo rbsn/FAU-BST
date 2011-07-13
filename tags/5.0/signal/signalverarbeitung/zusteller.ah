@@ -1,0 +1,107 @@
+#ifndef __ZUSTELLER_AH__
+#define __ZUSTELLER_AH__
+
+// WAS passiert!
+#include "zusteller_slice.ah"
+#include "../../defines.h"
+#include "../../remit.h"
+#include "../../spinlock.h"
+#include "../../tip.h"
+#include <iostream>
+
+
+aspect Zusteller {
+	//	selects the signal distribution 
+	//pointcut virtual handler() = 0;
+	pointcut zusteller() = "void TIP::tip_start(...)";
+	pointcut choice() = "void CPU::signal_choice(...)";
+	pointcut clear() = "void TIP::tip_clear(...)";
+	pointcut queue() = "void CPU::queue_init(...)";
+
+	advice "CPU" : slice Zusteller_Slice;
+
+	advice execution(zusteller()) : after() {
+	
+		int id = Coroutine::getCPUofActive();
+		int sig = *tjp->arg<0>();	// Param 0 ; Signal
+	
+		O_Stream *my_stream = CPU::stream[id];
+		
+		sigset_t *mask = CPU::getMask(id);
+
+
+			if(sig != SIGHUP) {
+					TIP::sp_queue.lock();	
+					Remit *r = TIP::get_handler(sig);
+					//r->blabla();
+					CPU::queue->enqueue(r);
+					//r->blabla();
+					TIP::sp_queue.unlock();
+			}
+			if(id == CONFIG_TIPCPU) {
+					// If SLIH-CPU was interrupted by another FLIH it must not do the SLIH stuff.
+					if(CPU::flag_SLIH == false) {
+							CPU::flag_SLIH = true;
+							TIP::sp_queue.lock();
+							while (!(CPU::queue->isEmpty())) {
+									TIP::sp_queue.unlock();
+
+
+									// Signale wieder freigeben mit Ausnahme des Aktiven
+									IRQ::unlockIRQ(mask);
+				// std::cerr << "Knecht working" << std::endl;
+									TIP::tip_clear(mask);
+									// Signale wieder sperren (ALLE)
+									IRQ::lockIRQ(mask);
+									TIP::sp_queue.lock();
+							}
+							TIP::sp_queue.unlock();
+
+					}
+
+			} else {
+					//	if(CPU::getLevel(id) == 1) {
+//					*my_stream << "[" << id << "] sending SIGHUP to " << CONFIG_TIPCPU << ". Sig: " << sig << endl;
+					IRQ::sendIPI(CONFIG_TIPCPU, SIGHUP);
+					//	}
+			}
+
+			CPU::flag_SLIH = false;
+	}
+	
+	advice execution(choice()) : after() {
+		CPU *cpu = *tjp->arg<0>();
+
+		// SLIH CPU --> SIGHUP
+		if(cpu->id == CONFIG_TIPCPU) {
+			sigaddset(&cpu->mask, SIGHUP);
+		}
+
+	}
+
+	advice execution(clear()) : after() {
+		sigset_t *mask = *tjp->arg<0>();
+
+		Remit *next;
+		do { 
+			// Signale wieder sperren mit Ausnahme des AKTIven
+			IRQ::lockIRQ(mask);
+			TIP::sp_queue.lock();
+			if((next = (Remit *) CPU::queue->dequeue())) {
+				TIP::sp_queue.unlock();
+				IRQ::unlockIRQ(mask);
+				TIP::tip_unban(next);
+			} else {
+				TIP::sp_queue.unlock();
+				IRQ::unlockIRQ(mask);
+			}
+
+		} while (next != 0);
+	}
+
+	advice execution(queue()) : after() {
+		CPU::queue = new Queue();
+	}
+};
+
+#endif
