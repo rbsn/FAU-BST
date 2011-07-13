@@ -70,7 +70,7 @@ void sighandler(int sig) {
 void hello(void) {
 	// Stream zum Ausgeben
 	O_Stream *my_stream = CPU::stream[CPU::getcpuid()];
-	//*my_stream << clear;
+	*my_stream << clear;
 	
 	int id = CPU::getcpuid();	// CPU-ID
 //	if(id == 0) std::cerr << " MAIN" << hex << apps[4] << std::endl;

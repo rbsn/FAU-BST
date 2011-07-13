@@ -4,7 +4,6 @@
 #include "../o_stream.h"
 
 extern IdleApp *idleapps[4];
-/* IMPLEMENTIERUNG DER METHODEN */
 
 // Konstruktor
 Scheduler::Scheduler() {
@@ -17,16 +16,12 @@ Scheduler::Scheduler() {
 
 // Readylist-Queue an CPU binden (dies findet in cpu.cc statt)
 void Scheduler::setCPUQueue(int cpuid, Queue *q) {
-//	O_Stream mystream;
-//	mystream << "Queue an CPU gebunden." << endl;
 	
-	//std::cout << "Queue an CPU gebunden." << std::endl;
 	readylist[cpuid] = q;
 }
 
 // Anmelden eines Prozesses zum Scheduling
 void Scheduler::ready(Entrant &that, int cpuid) {
-//	DBG << "Putting " << that.cid << " in readylist" << endl;
 //	that.reset_kill_flag();
 //	O_Stream mystream;
 	//mystream << "Putting in readylist " << endl;
@@ -37,7 +32,6 @@ void Scheduler::ready(Entrant &that, int cpuid) {
 //			bits = bits | (1 << i);
 //		}
 //	}
-//	DBG << "ReadyIPI: Bits: " << bits << endl;
 //	IRQ::sendIPI(bits, Plugbox::assassin);
 }
 
@@ -46,8 +40,8 @@ void Scheduler::ready(Entrant &that, int cpuid) {
 // von der Ready-Liste entfernt und aktiviert wird. In MPStuBS muss diese Methode auf jeder CPU
 // einmal aufgerufen werden, um auf dem jeweiligen Prozessor den ersten Prozess einzulasten
 void Scheduler::schedule() {
-	//int cpuid = CPU::getcpuid();
-	int cpuid = sched_getcpu();		// SCHEINT ZU STIMMEN
+	int cpuid = CPU::getcpuid();
+		
 //	O_Stream mystream;
 //	mystream << "CPU: " << cpuid << endl;
 	Entrant *tmp = (Entrant *)readylist[cpuid]->dequeue();
@@ -67,7 +61,8 @@ void Scheduler::schedule() {
 // => Nicht ans Ende der Liste wieder eintragen
 void Scheduler::exit(Entrant *self) {
 	//int cpuid = self->cpu;
-	int cpuid = sched_getcpu();
+	//int cpuid = sched_getcpu();
+	int cpuid = Coroutine::getCPUofActive();
 	Entrant *tmp = (Entrant *)readylist[cpuid]->dequeue();
 
 	if(tmp == 0) {
@@ -113,9 +108,8 @@ void Scheduler::resume() {
 // Manuelles Ausloesen mit resume(this); (cooperative)
 void Scheduler::resume(Entrant *self) {
 	//int cpuid = self->cpu;
-	int cpuid = sched_getcpu();
-	O_Stream mystream;
-	mystream << "CPUID: scherduler" << cpuid << endl;
+	//int cpuid = sched_getcpu();
+	int cpuid = Coroutine::getCPUofActive();
 
 	Entrant *tmp = (Entrant *)readylist[cpuid]->dequeue();
 

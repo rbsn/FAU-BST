@@ -22,8 +22,7 @@ aspect Zusteller {
 
 	advice execution(zusteller()) : after() {
 	
-	//	int id = CPU::getcpuid();
-		int id = sched_getcpu();
+		int id = Coroutine::getCPUofActive();
 		int sig = *tjp->arg<0>();	// Param 0 ; Signal
 	
 		O_Stream *my_stream = CPU::stream[id];

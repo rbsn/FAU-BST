@@ -1,7 +1,6 @@
 #include "coroutine.h"
-#include "../defines.h"
-#include <iostream>
 #include "../cpu.h"
+#include "../defines.h"
 
 int Coroutine::numCoroutines = 0;
 
@@ -12,7 +11,7 @@ Coroutine::Coroutine(void *tos) {
 
 	// Stackbeginnadresse der Koroutine eintragen
 	stackaddr_begin = tos;
-	std::cerr << "TOS of Coroutine: " << tos << std::endl;	
+	
 	toc_settle(&regs, tos, kickoff, this);
 }
 
@@ -43,17 +42,14 @@ bool Coroutine::dying() {
 
 int Coroutine::getCPUofActive() {
 	int addr = 0;
-	std::cerr << "Addr of Coroutine: " << &addr << std::endl;	
+
 	for(int i = 0; i < CPU::getNumOfBootedCPUs(); ++i) {
-	
 		if( ((int *) CPU::activeThread[i] - sizeof(int *) >= &addr) && 
-			((int *) CPU::activeThread[i] - CONFIG_APPSTACKSIZE <= &addr) ) {
-		//	std::cerr << "CPU ID of Coroutine with stackptr " << this->stackaddr_begin << " is: " << this->cpu << std::endl; 
+			((int *) (CPU::activeThread[i] - CONFIG_APPSTACKSIZE) <= &addr) ) {
+			
 			return i;
 		}
 	}
-
-
 
 	return -1;
 }

@@ -13,7 +13,7 @@ extern Scheduler scheduler;
 
 void Application::action () {
 	//O_Stream *my_stream = CPU::stream[cpu];
-	O_Stream *my_stream = CPU::stream[sched_getcpu()];
+	O_Stream *my_stream = CPU::stream[Coroutine::getCPUofActive()];
 	int count = 0;
 //	O_Stream my_stream;
 	while(1) {	

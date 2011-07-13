@@ -17,8 +17,8 @@ aspect Signal_RR {
 	advice execution(handler()) : around() {
 		
 		int sig = *tjp->arg<0>();	// Param 0 ; Signal
-
-		if(sched_getcpu() == CPU::getSignalCounter(sig)) {
+		
+		if(Coroutine::getCPUofActive() == CPU::getSignalCounter(sig)) {
 //			std::cerr << "handler " << sched_getcpu() << std::endl;
 			CPU::incrSignalCounter(sig);
 			// Correct CPU is calling first level interrupt handler
