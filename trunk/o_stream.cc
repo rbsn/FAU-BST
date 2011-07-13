@@ -3,7 +3,13 @@
 // Konstruktor
 O_Stream::O_Stream() {
 	base = 10;				// Default: Dezimalbasis
-	buf = new string("");
+	//buf = new string("");
+	pos = 0;
+	buf = new char[100];
+
+	for(int i = 0; i < 100; i++) {
+		buf[i] = 0;
+	}
 }
 
 // Destruktor
@@ -15,15 +21,23 @@ O_Stream::~O_Stream() {
 O_Stream& O_Stream::operator<< (char c) {
 	
 	if(c == '\n') {
-		if ( write(STDOUT_FILENO, buf->c_str(), buf->length()) == -1 ) {
-			perror("[O_Stream] Error @ write");
+		//if ( write(STDOUT_FILENO, buf->c_str(), buf->length()) == -1 ) {
+		if ( write(STDOUT_FILENO, buf, pos) == -1 ) {
+				perror("[O_Stream] Error @ write");
 		}
 
-		buf->clear();
+		
+		for(int i = 0; i < 100; i++) {
+			buf[i] = 0;
+		}
+		pos = 0;
+	//	buf->clear();
 	}
 
-	*buf += c;
-	
+	//*buf += c;
+	//buf->push_back(c);
+	buf[pos++] = c;
+
 	return *this;
 }
 

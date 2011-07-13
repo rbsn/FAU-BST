@@ -13,9 +13,11 @@ using namespace std;
 class O_Stream {
 
 private:
-   O_Stream(const O_Stream &copy); // Verhindere Kopieren
+	O_Stream(const O_Stream &copy); // Verhindere Kopieren
     
-   string *buf;
+	//string *buf;
+	char *buf;
+	int pos;
 
 public:
 	// Konstruktor
