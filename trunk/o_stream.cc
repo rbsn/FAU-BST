@@ -5,9 +5,9 @@ O_Stream::O_Stream() {
 	base = 10;				// Default: Dezimalbasis
 	//buf = new string("");
 	pos = 0;
-	buf = new char[100];
+	buf = new char[1000];
 
-	for(int i = 0; i < 100; i++) {
+	for(int i = 0; i < 1000; i++) {
 		buf[i] = 0;
 	}
 }

@@ -124,6 +124,56 @@ $COMPONENT={
 					files=>["fliessband.ah", "fliessband_slice.ah"],
 				}
 			]
+		},
+
+		{
+			name=>"Scheduler",
+			vname=>"Scheduler",
+			subdir=>"thread",
+
+			comp=>[
+				{
+					name=>"MultiQueue",
+					vname=>"MultiQueue",
+					depends=>"&MultiQueue",
+					files=>["schedmultiqueue.ah", "schedmultiqueue_slice.ah"],
+				},
+
+				{
+					name=>"SingleQueue",
+					vname=>"SingleQueue",
+					depends=>"&SingleQueue",
+					files=>["schedqueue.ah", "schedqueue_slice.ah"],
+				}
+			]
+		},
+
+		{
+			name=>"Spinlock",
+			vname=>"Spinlock",
+
+			comp=>[
+				{
+					name=>"SpinRead",
+					vname=>"SpinRead",
+					depends=>"&SpinRead",
+					files=>["trevavert.ah"],
+				},
+
+				{
+					name=>"SpinBackoff",
+					vname=>"SpinBackoff",
+					depends=>"&SpinBackoff",
+					files=>["bckfffkcb.ah"],
+				},
+				
+				{
+					name=>"TicketSpin",
+					vname=>"TicketSpin",
+					depends=>"&TicketSpin",
+					files=>["tcketekct.ah"],
+				}
+			]
 		}
 	]
 };

@@ -95,7 +95,7 @@ public:
 	inline static void decrLevel(int cpuid) { 	cpus[cpuid]->level -= 1; 	}
 
 
-	static void **activeThread;
+	static void **activeThread;		// Queue fuer aktives Objekt der CPU
 
 	// O_Stream for output  -  every CPU uses this Output-Stream	 
 	static O_Stream **stream;
@@ -129,7 +129,8 @@ private:
 	static bool booted; 
 	static CPU **cpus;
 
-	static void queue_init(int);
+	static void queue_init(int);		// initialize SLIH-Queue
+	static void setSchedulerQueue(int);	// initialize Thread-Queue and tell Scheduler about that fact, oder so :{
 	static void signal_choice(CPU *);
 	static int trampoline(void *);
 

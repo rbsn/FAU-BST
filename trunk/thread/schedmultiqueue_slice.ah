@@ -1,0 +1,15 @@
+#ifndef __SCHEDMULTIQUEUE_SLICE_AH_
+#define __SCHEDMULTIQUEUE_SLICE_AH_
+
+
+// ASPECT fuer die die Variante, dass es N Queues bei N CPUs gibt
+
+slice class SchedMultiQueue_Slice {
+
+	Queue **readylist;
+
+public:
+
+};
+
+#endif

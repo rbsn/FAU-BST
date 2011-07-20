@@ -1,0 +1,24 @@
+#ifndef __TREVAVERT_AH_
+#define __TREVAVERT_AH_
+
+
+//INCLUDES
+
+// ASPECT fuer die Variante des Spinlock mit lokaler Variable zur Eindaemmung von Cachekohaerenznachrichten
+
+aspect TrevaverT {
+
+	pointcut lock() = "void Spinlock::lock(...)";
+
+	advice execution(lock()) : around() {
+
+		volatile int *lockptr = &tjp->that()->isLocked;
+
+		// Solange isLocked gesetzt ist, warte, anschliessend TAS
+		do {
+			while( tjp->that()->isLocked );
+		} while( __sync_lock_test_and_set( lockptr, 1 ) );
+	}
+};
+
+#endif

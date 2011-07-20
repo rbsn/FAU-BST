@@ -20,14 +20,24 @@
  */
 class Spinlock {
 
-	public:
+public:
 	Spinlock();
 	void lock();
 	void unlock();	
 
-	private:
+private:
 	Spinlock(const Spinlock& copy); //verhindert Kopieren
+	
 	volatile int isLocked;
+
+	volatile unsigned int value;	// Number being currently served
+
+	volatile unsigned int counter;	// Number being served next
+
+	inline void cpu_pause(unsigned long time) {
+		while(time--);
+	}
 };
+
  
 #endif

@@ -75,9 +75,8 @@ int CPU::boot_cpus(void (*fn)(void), int maxcpus) {
 		CPU::stream[i] = new O_Stream();	// Create an o_stream for every single CPU
 
 //		*CPU::stream[i] << "TEST:  " << i << endl;
-			
-		cpus[i]->q = new Queue();	//Create ReadyList for Scheduler
-		scheduler.setCPUQueue(i, cpus[i]->q);	//Tell Scheduler about Queue
+		
+		CPU::setSchedulerQueue(i);
 
 		// Stackreservierung mit mmap
 		cpus[i]->stack_begin = mmap(NULL, CONFIG_STACKSIZE, PROT_EXEC | PROT_READ | PROT_WRITE, 
@@ -147,6 +146,11 @@ void CPU::queue_init(int maxcpus) {
 }
 
 
+void CPU::setSchedulerQueue(int cpuid) {
+// TODO ASPECT
+//	cpus[cpuid]->q = new Queue();					//Create ReadyList for Scheduler
+//	scheduler.setCPUQueue(cpuid, cpus[cpuid]->q);	//Tell Scheduler about Queue
+}
 
 int CPU::getcpuid() {
 	// Put an arbitrary variable on the stack and readout the stackpointer

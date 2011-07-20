@@ -11,6 +11,7 @@
 #ifdef CONFIG_SIGUSR1
 #include "signal/signalzustellung/signalusr1.h"
 #endif
+#include "spinlock.h"
 #include "timer.h"
 #include "tip.h"
 #include <errno.h>
@@ -59,8 +60,10 @@ Application *apps[8];
 IdleApp	*idleapps[4];
 
 Scheduler scheduler;
+Spinlock spinlock;
 
 using namespace std;
+
 
 // Signalhandler zum behandeln der Signale
 void sighandler(int sig) {

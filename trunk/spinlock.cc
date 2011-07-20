@@ -5,8 +5,7 @@ Spinlock::Spinlock() {
 }
 
 void Spinlock::lock() {
-	
-	while( __sync_lock_test_and_set( &isLocked, 1 ) ) { }
+	//while( __sync_lock_test_and_set( &isLocked, 1 ) ) { }	
 }
 
 void Spinlock::unlock() {

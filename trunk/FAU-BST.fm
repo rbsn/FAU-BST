@@ -1,3 +1,32 @@
+menu "Schedulerqueue"
+	choice
+		prompt "Auswaehlen der Queue-Art"
+	
+		config MultiQueue
+			bool "MultiQueue"
+		config SingleQueue
+			bool "SingleQueue"
+	endchoice
+endmenu
+
+menu "Spinlock"
+	choice
+		prompt "Auswaehlen der Spinlock-Art"
+
+		config SpinRead
+			bool "SpinRead"
+		comment "Sensitiver Spinlock; Nur lesender Zugriff beim Warten; Cacheline gemeinsam nutzbar"
+			depends on SpinRead
+		config SpinBackoff
+			bool "SpinBackoff"
+		comment "Sensitiver Spinlock mit proportionalem Backoff"
+			depends on SpinBackoff
+		config TicketSpin
+			bool "TicketSpin"
+	endchoice
+endmenu
+
+
 menu "Signal"
 
 	menu "Signalzustellung"

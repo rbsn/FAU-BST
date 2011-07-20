@@ -1,0 +1,63 @@
+#ifndef __SCHEDMULTIQUEUE_AH_
+#define __SCHEDMULTIQUEUE_AH_
+
+
+//INCLUDES
+#include "schedmultiqueue_slice.ah"
+#include "scheduler.h"
+#include "../cpu.h"
+
+
+extern Scheduler scheduler;
+
+// ASPECT fuer die die Variante, dass es N Queues bei N CPUs gibt
+
+aspect SchedMultiQueue {
+
+	pointcut setschedqueue() = "void CPU::setSchedulerQueue(...)";
+	pointcut sched() = "void Scheduler::init_readylist(...)";
+	pointcut setcpuqueue() = "void Scheduler::setCPUQueue(...)";
+	
+	pointcut enqueue() = "void Scheduler::sched_enqueue(...)";
+	pointcut dequeue() = "Entrant *Scheduler::sched_dequeue(...)";
+
+	advice "Scheduler" : slice SchedMultiQueue_Slice;
+
+
+	advice execution(setschedqueue()) : around() {
+		
+		int cpuid = *tjp->arg<0>();		// 1st Param of CPU::setSchedulerQueue
+		
+		CPU::cpus[cpuid]->q = new Queue();					//Create ReadyList for Scheduler
+		scheduler.setCPUQueue(cpuid, CPU::cpus[cpuid]->q);	//Tell Scheduler about Queue
+	}
+	
+	advice execution(sched()) : around() {
+		// Every CPU has one ReadyList
+		tjp->that()->readylist = new Queue *[_SC_NPROCESSORS_ONLN];
+	}
+
+	advice execution(setcpuqueue()) : around() {
+		int cpuid = *tjp->arg<0>();		// 1st Param of CPU::setSchedulerQueue
+		
+		Queue *q = *tjp->arg<1>();		// 2nd Param ...
+
+		tjp->that()->readylist[cpuid] = q;
+	}
+
+	advice execution(enqueue()) : around() {
+		
+		tjp->that()->readylist[ *tjp->arg<1>() ]->enqueue( *tjp->arg<0>() );
+	}
+
+	advice execution(dequeue()) : around() {
+
+		Entrant *e = (Entrant *) tjp->that()->readylist[ *tjp->arg<0>() ]->dequeue(); 
+
+		// ersetzt return-statement (generisch); auch moeglich: Entrant *ret = 
+		JoinPoint::Result *ret = tjp->result();
+		*ret = e;
+	}
+};
+
+#endif

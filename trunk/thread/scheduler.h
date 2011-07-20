@@ -38,9 +38,17 @@ public:
 
 private:
     Scheduler (const Scheduler &copy); // Verhindere Kopieren
+
+	void sched_enqueue(Entrant *, int);
+
+	Entrant *sched_dequeue(int);
+
+
+	void init_readylist();
+	
 	bool *idle;
 
-	Queue **readylist;
+//	Queue **readylist;	// TODO ASPECT SLICE
 };
 
 #endif
