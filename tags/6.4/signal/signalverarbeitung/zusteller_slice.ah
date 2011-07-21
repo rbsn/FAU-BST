@@ -1,0 +1,17 @@
+#ifndef __ZUSTELLER_SLICE_AH__
+#define __ZUSTELLER_SLICE_AH__
+
+slice class Zusteller_Slice {
+
+public:
+	// Queue to store pending SLIHs	 -	every CPU got one itself
+	static Queue *queue;
+
+	static bool flag_SLIH;
+};
+
+slice Queue *Zusteller_Slice::queue; 
+
+slice bool Zusteller_Slice::flag_SLIH = false;
+
+#endif

@@ -1,0 +1,31 @@
+#ifndef __TCKETEKCT_AH_
+#define __TCKETEKCT_AH_
+
+
+//INCLUDES
+
+// ASPECT fuer die Variante des Spinlock mit lokaler Variable zur Eindaemmung von Cachekohaerenznachrichten
+
+aspect TcketekcT {
+
+	pointcut lock() = "void Spinlock::lock(...)";
+	pointcut unlock() = "void Spinlock::unlock(...)";
+
+	advice execution(lock()) : around() {
+		
+		volatile unsigned int *counterptr = &tjp->that()->counter;
+
+		unsigned int self = __sync_fetch_and_add (counterptr, 1);
+
+		do {	
+			tjp->that()->cpu_pause( self - tjp->that()->value );
+		} while( self != tjp->that()->value );
+	}
+
+
+	advice execution(unlock()) : around() {
+		tjp->that()->value += 1;
+	}
+};
+
+#endif

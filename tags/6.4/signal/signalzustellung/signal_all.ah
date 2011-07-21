@@ -1,0 +1,28 @@
+#ifndef __SIGNAL_ALL_AH__
+#define __SIGNAL_ALL_AH__
+
+#include "../../cpu.h"
+
+// WAS passiert!
+
+aspect Signal_All {
+
+	pointcut virtual choice() = 0;
+
+	advice execution(choice()) : after() {
+	
+		CPU *cpu = *tjp->arg<0>();
+	
+		#ifdef CONFIG_SIGALRM_Every_CPU
+			sigaddset(&cpu->mask, SIGALRM);
+		#endif
+		#ifdef CONFIG_SIGCONT_Every_CPU
+			sigaddset(&cpu->mask, SIGCONT);
+		#endif
+		#ifdef CONFIG_SIGUSR1_Every_CPU
+			sigaddset(&cpu->mask, SIGUSR1);
+		#endif
+	}
+};
+
+#endif

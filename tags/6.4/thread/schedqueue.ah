@@ -1,0 +1,43 @@
+#ifndef __SCHEDQUEUE_AH_
+#define __SCHEDQUEUE_AH_
+
+
+//INCLUDES
+#include "schedqueue_slice.ah"
+#include "scheduler.h"
+#include "../spinlock.h"
+//#include "../cpu.h"
+
+
+// ASPECT fuer die die Variante, dass es N Queues bei N CPUs gibt
+
+extern Spinlock spinlock;
+
+aspect SchedQueue {
+
+	pointcut enqueue() = "void Scheduler::sched_enqueue(...)";
+	pointcut dequeue() = "Entrant *Scheduler::sched_dequeue(...)";
+
+
+	advice "Scheduler" : slice SchedQueue_Slice;
+
+	advice execution(enqueue()) : around() {
+		
+		spinlock.lock();
+		tjp->that()->readylist.enqueue( *tjp->arg<0>() );
+		spinlock.unlock();
+	}
+
+	advice execution(dequeue()) : around() {
+
+		spinlock.lock();
+		Entrant *e = (Entrant *) tjp->that()->readylist.dequeue(); 
+		spinlock.unlock();
+	
+		// ersetzt return-statement
+		JoinPoint::Result *ret = tjp->result();
+		*ret = e;
+	}
+};
+
+#endif
