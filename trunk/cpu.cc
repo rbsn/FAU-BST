@@ -163,3 +163,32 @@ int CPU::getcpuid() {
 
 	return -1;
 }
+
+void CPU::preemption_lock() {
+	// Atomic bit set ( 0 XOR 1 = 1)
+	__sync_fetch_and_xor(&preemptive_flag, 1);
+}
+
+void CPU::preemption_unlock() {
+	// Atomic bit unset ( 1 XOR 1 = 0)
+	__sync_fetch_and_xor(&preemptive_flag, 1);
+
+	if(preempted != 0) {	// Any pending?
+		Entrant *tmp = preempted;
+		preempted = 0;
+		scheduler.resume((Entrant *)scheduler.active(), tmp); // Dispatch deferred Entrant
+	}
+}
+
+void CPU::defer_entrant(Entrant *e) {
+	preempted = e;
+}
+
+bool CPU::isPreemptionLocked() {
+	return preemptive_flag;
+}
+
+bool CPU::isDeferred() {
+	if(preempted != 0) return true;
+	return false;
+}

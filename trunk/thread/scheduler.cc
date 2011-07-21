@@ -87,7 +87,16 @@ void Scheduler::resume() {
 void Scheduler::resume(Entrant *self) {
 	int cpuid = Coroutine::getCPUofActive();
 
-	//Entrant *tmp = (Entrant *)readylist[cpuid]->dequeue();
+	// For preemption lock
+	if(CPU::cpus[cpuid]->isPreemptionLocked()) { 	// Preemption Lock is set
+		if(CPU::cpus[cpuid]->isDeferred()) return; 	// Already s.o. waiting -> Do nothing
+	
+		// If not get Entrant and set it as deferred
+		CPU::cpus[cpuid]->defer_entrant(sched_dequeue(cpuid));
+		return;
+	}
+
+	//Entrant *tmp = (Entrant *)readylVist[cpuid]->dequeue();
 	Entrant *tmp = sched_dequeue(cpuid);
 
 	// keine ausfuehrbare Coroutine mehr vorhanden
@@ -99,4 +108,13 @@ void Scheduler::resume(Entrant *self) {
 		idle[cpuid] = false;
 		dispatch(*tmp, cpuid);
 	}
+}
+
+void Scheduler::resume(Entrant *self, Entrant *next) {
+	int cpuid = Coroutine::getCPUofActive();
+
+	sched_enqueue(self, cpuid);
+	idle[cpuid] = false;
+	dispatch(*next, cpuid);
+	
 }

@@ -25,6 +25,7 @@ public:
 	// Ausloesen eines Prozesswechsels
 	void resume();
 	void resume(Entrant *);
+	void resume(Entrant *, Entrant *);
 
 	// Setzt einen dedizierten Idle-Thread fuer die entsprechende CPU
 //	void set_idle_thread(int cpuid, Entrant *thread);

@@ -8,6 +8,7 @@
 
 // INCLUDES
 #include "defines.h"
+#include "thread/entrant.h"
 #include "irq.h"
 #include "o_stream.h"
 #include "queue.h"
@@ -39,7 +40,12 @@ public:
 	inline static int getNumOfBootedCPUs() { 	return num_of_cpus;		}
 
 	// Default constructor
-	CPU() {		num_of_cpus++;	}
+	CPU() {		
+		num_of_cpus++; 
+		preemptive_flag = false;
+		preempted = 0;
+	}
+
 	// Default destructor
 	~CPU() {	
 		num_of_cpus--;	
@@ -54,6 +60,12 @@ public:
 		}
 	*/	
 	}
+
+	void preemption_lock();
+	void preemption_unlock();
+	void defer_entrant(Entrant *);
+	bool isDeferred();
+	bool isPreemptionLocked();
 
 	inline static sigset_t *getMask(int cpuid) {
 		return &(cpus[cpuid]->mask);
@@ -99,24 +111,14 @@ public:
 
 	// O_Stream for output  -  every CPU uses this Output-Stream	 
 	static O_Stream **stream;
-/*
-#ifdef Fliessband
-	// Queue to store pending SLIHs	 -	every CPU got one itself
-	static Queue **queue;
-	
-	inline static bool getFlag_SLIH(int cpuid) {	return cpus[cpuid]->flag_SLIH;	}
+	static CPU **cpus;
 
-	inline static void flipFlag_SLIH(int cpuid) {	cpus[cpuid]->flag_SLIH = not(cpus[cpuid]->flag_SLIH); }
-#else 
-	// Queue to store pending SLIHs	 -  one queue for specified CPU
-	static Queue *queue;
-
-	static bool flag_SLIH;
-#endif
-*/
 private:
 	void *stack_begin;	// begin of the stack
 	void *stack_end; 	// end of the stack
+	Entrant *preempted;	// pointer of failed to resume because of preemption lock
+
+	bool preemptive_flag;
 	
 	int tid;			// thread-ID = process-ID
 	
@@ -125,9 +127,9 @@ private:
 
 	sigset_t mask;
 
+
 	// boolean that shows if CPUs were already booted
 	static bool booted; 
-	static CPU **cpus;
 
 	static void queue_init(int);		// initialize SLIH-Queue
 	static void setSchedulerQueue(int);	// initialize Thread-Queue and tell Scheduler about that fact, oder so :{

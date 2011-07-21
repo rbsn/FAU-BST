@@ -45,14 +45,21 @@ aspect SchedMultiQueue {
 		tjp->that()->readylist[cpuid] = q;
 	}
 
+	// Arg0: Entrant-Ptr ; Arg1: cpuid
 	advice execution(enqueue()) : around() {
-		
-		tjp->that()->readylist[ *tjp->arg<1>() ]->enqueue( *tjp->arg<0>() );
+		int cpuid = *tjp->arg<1>();
+		CPU::cpus[cpuid]->preemption_lock();
+		tjp->that()->readylist[cpuid]->enqueue( *tjp->arg<0>() );
+		CPU::cpus[cpuid]->preemption_unlock();
 	}
 
+	// Arg0: cpuid
 	advice execution(dequeue()) : around() {
+		int cpuid = *tjp->arg<0>();
+		CPU::cpus[cpuid]->preemption_lock();
 
-		Entrant *e = (Entrant *) tjp->that()->readylist[ *tjp->arg<0>() ]->dequeue(); 
+		Entrant *e = (Entrant *) tjp->that()->readylist[cpuid]->dequeue(); 
+		CPU::cpus[cpuid]->preemption_unlock();
 
 		// ersetzt return-statement (generisch); auch moeglich: Entrant *ret = 
 		JoinPoint::Result *ret = tjp->result();
