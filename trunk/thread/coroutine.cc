@@ -53,3 +53,22 @@ int Coroutine::getCPUofActive() {
 
 	return -1;
 }
+
+Coroutine * Coroutine::getActiveCoroutine() {
+	// Stacklokale Variable anlegen
+	int sp = 0;
+	int sb, *pd;
+
+	// Unteres Stackende ist Pointeradresse mit unteren 16 bits '1'
+	// weil 2^17 = 128 * 1024 Byte
+
+	sb = (int)(&sp) | 0xfff;
+
+//	std::cerr << "SP: " << &sp << "SB: " << std::hex << sb << std::endl;
+
+	pd = (int *)(sb - (sizeof(char*)-1) ) ;
+
+//	std::cerr << "PD: " << pd << " Coroutine*: " << *pd << std::endl;
+
+	return (Coroutine *) *pd;
+}

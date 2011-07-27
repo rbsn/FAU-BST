@@ -1,0 +1,51 @@
+#ifndef __COROUTINE_ASPECT_MEGA_AH_
+#define __COROUTINE_ASPECT_MEGA_AH_
+
+
+//INCLUDES
+#include "../stack.h"
+
+// ASPECT fuer die die Variante, dass es N Queues bei N CPUs gibt
+
+
+aspect CoroutineAspectMega {
+
+	pointcut stack() = "void *Stack::allocate_stack(...)";
+	pointcut app() = "void Stack::create_apps(...)";
+
+
+	advice execution(stack()) : around() {
+		static int nrOfStack = 0;
+
+		if (nrOfStack == CONFIG_APPS) {
+			JoinPoint::Result *ret = tjp->result();
+			// Hoechste Adresse des Stacksegments - 1, zusaetzlich pointer auf Coroutine abziehen!
+			*ret = 0;
+			return;
+		}
+		
+		
+
+		if(Stack::megastack == 0) {
+			Stack::megastack =  mmap(NULL, (CONFIG_APPS+1) * CONFIG_APPSTACKSIZE, PROT_EXEC | PROT_READ | PROT_WRITE, 
+					MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN, -1, sysconf(_SC_PAGE_SIZE));
+		}
+		
+		// ersetzt return-statement
+		JoinPoint::Result *ret = tjp->result();
+		// Hoechste Adresse des Stacksegments - 1, zusaetzlich pointer auf Coroutine abziehen!
+		*ret = Stack::megastack + (++nrOfStack) * CONFIG_APPSTACKSIZE - sizeof(char*) - sizeof(char *);
+
+	}
+
+	advice execution(app()) : around() {
+		int anzahl = *tjp->arg<0>();
+		for(int i = 0; i < anzahl; i++) {
+			int *stack = (int*)Stack::allocate_stack();
+			Stack::apps[i] = new Application(stack);
+			*(stack + 1) = (int) Stack::apps[i];
+		}
+	}
+};
+
+#endif

@@ -11,8 +11,6 @@ private:
 	bool killed;
 
 public:
-//	Coroutine() {}  // ADDED: Standardkonstruktor, da sonst Compiler-Fehler
-
 	// Konstruktor
 	Coroutine(void *tos);
 
@@ -36,6 +34,9 @@ public:
 
 	int cpu;
 	
+	// Gets the running coroutine
+    static Coroutine * getActiveCoroutine();
+
 	// Gets the CPU-ID of active running thread, -1 on error
 	static int getCPUofActive();
 

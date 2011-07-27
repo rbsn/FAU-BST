@@ -2,7 +2,7 @@ $COMPONENT={
 	name=>"FAU-BST_model",
 	vname=>"FAU-BST model (complexe example)",
 	dir=>"./",
-	files=>["chain.h", "cpu.cc", "cpu.h", "defines.h", "irq.cc", "irq.h", "main.cc", "o_stream.cc", "o_stream.h", "queue.cc", "queue.h", "remit.h", "spinlock.cc", "spinlock.h", "timer.cc", "timer.h", "tip.cc", "tip.h", "color.h", "gotoxy.h", "thread/coroutine.cc", "thread/coroutine.h", "thread/dispatch.cc", "thread/dispatch.h", "thread/appl.h", "thread/appl.cc", "thread/toc.h", "thread/toc.cc", "thread/toc.inc", "thread/toc.asm", "thread/kickoff.cc", "thread/entrant.h", "thread/scheduler.h", "thread/scheduler.cc", "thread/idleapp.h", "thread/idleapp.cc"],
+	files=>["chain.h", "cpu.cc", "cpu.h", "defines.h", "irq.cc", "irq.h", "main.cc", "o_stream.cc", "o_stream.h", "queue.cc", "queue.h", "remit.h", "spinlock.cc", "spinlock.h", "timer.cc", "timer.h", "tip.cc", "tip.h", "color.h", "gotoxy.h", "thread/coroutine.cc", "thread/coroutine.h", "thread/dispatch.cc", "thread/dispatch.h", "thread/appl.h", "thread/appl.cc", "thread/toc.h", "thread/toc.cc", "thread/toc.inc", "thread/toc.asm", "thread/kickoff.cc", "thread/entrant.h", "thread/scheduler.h", "thread/scheduler.cc", "thread/idleapp.h", "thread/idleapp.cc", "stack.h", "stack.cc"],
 
 	comp=>[
 		{
@@ -172,6 +172,27 @@ $COMPONENT={
 					vname=>"TicketSpin",
 					depends=>"&TicketSpin",
 					files=>["tcketekct.ah"],
+				}
+			]
+		},
+
+		{
+			name=>"Stackvariante",
+			vname=>"Stackvariante",
+
+			comp=>[
+				{
+					name=>"MegaStack",
+					vname=>"MegaStack",
+					depends=>"&MegaStack",
+					files=>["thread/coroutinemega.ah"],
+				},
+
+				{
+					name=>"SimpleStack",
+					vname=>"SimpleStack",
+					depends=>"&SimpleStack",
+					files=>["thread/coroutine.ah", "thread/coroutine_slice.ah"],
 				}
 			]
 		}
