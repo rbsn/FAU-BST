@@ -1,0 +1,15 @@
+#ifndef __SCHEDQUEUE_SLICE_AH_
+#define __SCHEDQUEUE_SLICE_AH_
+
+
+// ASPECT fuer die die Variante, dass es eine Queue bei N CPUs gibt
+
+slice class SchedQueue_Slice {
+
+	Queue readylist;
+
+public:
+
+};
+
+#endif

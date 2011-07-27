@@ -1,0 +1,13 @@
+#ifndef __SIGNALUSR1_ALL_AH__
+#define __SIGNALUSR1_ALL_AH__
+
+#include "signal_all.ah"
+
+// WO es passiert
+
+aspect SignalUSR1_Aspect : public Signal_All {
+
+	pointcut choice() = "void CPU::signal_choice(...)";
+};
+
+#endif

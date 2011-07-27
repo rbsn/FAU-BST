@@ -1,0 +1,27 @@
+#ifndef __BCKFFFKCB_AH_
+#define __BCKFFFKCB_AH_
+
+
+//INCLUDES
+
+// ASPECT fuer die Variante des Spinlock mit einstellbarer Wartezeit (Backoff, exponentiell)
+
+aspect BckfffkcB {
+
+	pointcut lock() = "void Spinlock::lock(...)";
+
+	advice execution(lock()) : around() {
+		
+		volatile int *lockptr = &tjp->that()->isLocked;
+
+		unsigned long aloha = 1;	// Awesowe Low-cost Optimized Hold Addition, d.h. bckff
+
+		// Solange isLocked gesetzt ist, warte, anschliessend TAS
+		while( __sync_lock_test_and_set( lockptr, 1 ) ) {
+			tjp->that()->cpu_pause(aloha);
+			aloha *= 2;	// exponentiell
+		}
+	}
+};
+
+#endif

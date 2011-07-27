@@ -1,0 +1,108 @@
+menu "Stackvariante"
+	choice
+		prompt "Auswaehlen der Stack-Art fuer Threads"
+	
+		config MegaStack
+			bool "MegaStack"
+		config SimpleStack
+			bool "SimpleStack"
+	endchoice
+endmenu
+menu "Schedulerqueue"
+	choice
+		prompt "Auswaehlen der Queue-Art"
+	
+		config MultiQueue
+			bool "MultiQueue"
+		config SingleQueue
+			bool "SingleQueue"
+	endchoice
+endmenu
+
+menu "Spinlock"
+	choice
+		prompt "Auswaehlen der Spinlock-Art"
+
+		config SpinRead
+			bool "SpinRead"
+		comment "Sensitiver Spinlock; Nur lesender Zugriff beim Warten; Cacheline gemeinsam nutzbar"
+			depends on SpinRead
+		config SpinBackoff
+			bool "SpinBackoff"
+		comment "Sensitiver Spinlock mit proportionalem Backoff"
+			depends on SpinBackoff
+		config TicketSpin
+			bool "TicketSpin"
+	endchoice
+endmenu
+
+
+menu "Signal"
+
+	menu "Signalzustellung"
+	
+		menuconfig SIGALRM
+			bool "SIGALRM"
+			default y
+			
+			choice
+				prompt "Zustellung des Signals SIGALRM"
+				depends on SIGALRM
+
+				config SIGALRM_Defined_CPU
+					bool "SIGALRM_Defined_CPU"
+				config SIGALRM_Every_CPU
+					bool "SIGALRM_Every_CPU"
+				config SIGALRM_Round_Robin_Algorithm
+					bool "SIGALRM_Round_Robin_Algorithm"
+			endchoice
+
+		menuconfig SIGCONT
+			bool "SIGCONT"
+			default y
+			
+			choice
+				prompt "Zustellung des Signals SIGCONT"
+				depends on SIGCONT
+		
+				config SIGCONT_Defined_CPU
+					bool "SIGCONT_Defined_CPU"
+				config SIGCONT_Every_CPU
+					bool "SIGCONT_Every_CPU"
+				config SIGCONT_Round_Robin_Algorithm
+					bool "SIGCONT_Round_Robin_Algorithm"	
+			endchoice
+		
+		menuconfig SIGUSR1
+			bool "SIGUSR1"
+			default y
+			
+			choice
+				prompt "Zustellung des Signals SIGUSR1"
+				depends on SIGUSR1
+
+				config SIGUSR1_Defined_CPU
+					bool "SIGUSR1_Defined_CPU"
+				config SIGUSR1_Every_CPU
+					bool "SIGUSR1_Every_CPU"
+				config SIGUSR1_Round_Robin_Algorithm
+					bool "SIGUSR1_Round_Robin_Algorithm"		
+			endchoice
+	endmenu
+
+	menu "Signalverarbeitung"
+
+		choice
+			prompt "Verarbeitung der Signale"
+	
+			config asymetric_procedure
+				bool "Zustellerbetrieb"
+			comment "Abarbeitung des SLIH nicht zwingend durch die CPU, die den FLIH bearbeitet hat"
+				depends on asymetric_procedure
+			config symetric_procedure
+				bool "Fliessbandbetrieb"
+			comment "Abarbeitung des SLIH durch die CPU, die den FLIH bearbeitet hat"
+				depends on symetric_procedure
+		endchoice
+	endmenu
+endmenu

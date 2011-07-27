@@ -1,0 +1,36 @@
+#ifndef __SIGNAL_SPEC_AH__
+#define __SIGNAL_SPEC_AH__
+
+#include "../../cpu.h"
+
+// WAS passiert!
+
+aspect Signal_Spec {
+	
+	pointcut virtual choice() = 0;
+
+	advice execution(choice()) : after() {
+		
+		CPU *cpu = *tjp->arg<0>();
+
+		
+
+		#ifdef CONFIG_SIGALRM_Defined_CPU
+			if(cpu->id == CONFIG_SIGALRM_Defined_CPU) {
+				sigaddset(&cpu->mask, SIGALRM);
+			}
+		#endif
+		#ifdef CONFIG_SIGCONT_Defined_CPU
+			if(cpu->id == CONFIG_SIGCONT_Defined_CPU) {
+				sigaddset(&cpu->mask, SIGCONT);
+			}
+		#endif
+		#ifdef CONFIG_SIGUSR1_Defined_CPU
+			if(cpu->id == CONFIG_SIGUSR1_Defined_CPU) {
+				sigaddset(&cpu->mask, SIGUSR1);
+			}
+		#endif
+	}
+};
+
+#endif

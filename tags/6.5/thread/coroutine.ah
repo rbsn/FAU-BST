@@ -1,0 +1,52 @@
+#ifndef __COROUTINE_ASPECT_AH_
+#define __COROUTINE_ASPECT_AH_
+
+
+//INCLUDES
+#include "coroutine_slice.ah"
+#include "appl.h"
+#include "../stack.h"
+
+// ASPECT fuer die die Variante, dass es N Queues bei N CPUs gibt
+
+aspect CoroutineAspect {
+
+	pointcut app() = "void Stack::create_apps(...)";
+
+	
+	advice "Stack" : slice Coroutine_Slice;
+
+	advice execution(app()) : around() {
+		
+		static Application app1(&Stack::app1stack[CONFIG_APPSTACKSIZE]);
+		static Application app2(&Stack::app2stack[CONFIG_APPSTACKSIZE]);
+		static Application app3(&Stack::app3stack[CONFIG_APPSTACKSIZE]);
+		static Application app4(&Stack::app4stack[CONFIG_APPSTACKSIZE]);
+		static Application app5(&Stack::app5stack[CONFIG_APPSTACKSIZE]);
+		static Application app6(&Stack::app6stack[CONFIG_APPSTACKSIZE]);
+		static Application app7(&Stack::app7stack[CONFIG_APPSTACKSIZE]);
+		static Application app8(&Stack::app8stack[CONFIG_APPSTACKSIZE]);
+		
+		Stack::apps[0] = &app1;
+		Stack::apps[1] = &app2;
+		Stack::apps[2] = &app3;
+		Stack::apps[3] = &app4;
+		Stack::apps[4] = &app5;
+		Stack::apps[5] = &app6;
+		Stack::apps[6] = &app7;
+		Stack::apps[7] = &app8;
+		
+	/*	
+		Stack::apps[0] = new Application(&Stack::app1stack[CONFIG_APPSTACKSIZE]);
+		Stack::apps[1] = new Application(&Stack::app2stack);
+		Stack::apps[2] = new Application(&Stack::app3stack);
+		Stack::apps[3] = new Application(&Stack::app4stack);
+		Stack::apps[4] = new Application(&Stack::app5stack);
+		Stack::apps[5] = new Application(&Stack::app6stack);
+		Stack::apps[6] = new Application(&Stack::app7stack);
+		Stack::apps[7] = new Application(&Stack::app8stack);
+	*/
+	}
+};
+
+#endif

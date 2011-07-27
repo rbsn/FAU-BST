@@ -1,0 +1,34 @@
+#ifndef __COROUTINE_SLICE_AH_
+#define __COROUTINE_SLICE_AH_
+
+
+// ASPECT fuer die die Variante, dass es eine Queue bei N CPUs gibt
+
+slice class Coroutine_Slice {
+
+
+public:
+	static unsigned char app1stack[CONFIG_APPSTACKSIZE];	
+	static unsigned char app2stack[CONFIG_APPSTACKSIZE];
+	static unsigned char app3stack[CONFIG_APPSTACKSIZE];
+	static unsigned char app4stack[CONFIG_APPSTACKSIZE];
+	static unsigned char app5stack[CONFIG_APPSTACKSIZE];
+	static unsigned char app6stack[CONFIG_APPSTACKSIZE];
+	static unsigned char app7stack[CONFIG_APPSTACKSIZE];
+	static unsigned char app8stack[CONFIG_APPSTACKSIZE];
+
+
+
+};
+
+//slice unsigned char Coroutine_Slice::app1stack[];	
+slice unsigned char Coroutine_Slice::app1stack[];
+slice unsigned char Coroutine_Slice::app2stack[];
+slice unsigned char Coroutine_Slice::app3stack[];
+slice unsigned char Coroutine_Slice::app4stack[];
+slice unsigned char Coroutine_Slice::app5stack[];
+slice unsigned char Coroutine_Slice::app6stack[];
+slice unsigned char Coroutine_Slice::app7stack[];
+slice unsigned char Coroutine_Slice::app8stack[];
+
+#endif
